@@ -73,40 +73,27 @@
   .hero h1 {
     font-family: ui-serif, "Iowan Old Style", Georgia, serif;
     font-weight: 500;
-    font-size: clamp(28px, 4.4vw, 44px);
-    line-height: 1.22;
-    letter-spacing: -0.01em;
-    margin: 0 0 12px 0;
+    font-size: clamp(32px, 5.2vw, 52px);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px 0;
     color: var(--ink);
   }
   .hero .lede {
-    font-size: clamp(18px, 2.1vw, 22px);
+    font-size: clamp(15px, 1.55vw, 17px);
     color: var(--ink-muted);
-    margin: 0 0 8px 0;
-    line-height: 1.45;
+    margin: 0 0 4px 0;
+    line-height: 1.5;
+    font-style: normal;
   }
   .hero .epigram {
-    font-size: clamp(18px, 2.1vw, 22px);
-    color: var(--ink);
-    margin: 0 0 36px 0;
-    line-height: 1.45;
+    font-size: clamp(13px, 1.3vw, 14.5px);
+    color: var(--ink-dim);
+    margin: 0;
+    line-height: 1.5;
     font-style: italic;
+    letter-spacing: 0.005em;
   }
-  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
-  .btn {
-    display: inline-block;
-    padding: 10px 18px;
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    color: var(--ink);
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: border-color 120ms;
-  }
-  .btn.primary { background: var(--accent); color: #1a1a1f; border-color: var(--accent); }
-  .btn:hover { border-color: var(--accent); }
 
   /* Formal-definition callout (the page's one pinned, quotable block) */
   .definition {
@@ -154,6 +141,13 @@
     color: var(--ink);
     white-space: pre;
   }
+  .panel .panel-body {
+    padding: 18px 20px;
+    color: var(--ink);
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  .panel .panel-body p { margin: 0; }
   .panel pre .c-com { color: var(--code-com); font-style: italic; }
   .panel pre .c-key { color: var(--code-key); }
   .panel pre .c-str { color: var(--code-str); }
@@ -403,10 +397,6 @@
     <h1>scry &mdash; Agent memory you query in SQL.</h1>
     <p class="lede">Markers in your files, indexed live, queryable cold.</p>
     <p class="epigram">The disk is the database. The SQL is the cache.</p>
-    <div class="cta-row">
-      <a class="btn primary" href="#install">Install</a>
-      <a class="btn" href="#spec">Read the spec</a>
-    </div>
   </div>
 </header>
 
@@ -421,6 +411,29 @@
     </div>
 
     <p>Every point of information an agent could ever need in a future session can be captured &mdash; but what aspects of that knowledge to surface to an agent and how to surface it remain the lynchpin of the agent context problem. The scry marker specification attempts to address some of the surface of the agent context problem as it relates specifically to agentic coding.</p>
+  </div>
+</section>
+
+<!-- ─── SCRY'S ANSWER ────────────────────────────────────────── -->
+<section id="scrys-answer">
+  <div class="wrap">
+    <h2>Scry&rsquo;s answer</h2>
+    <p>An agent is already producing the knowledge a future session will need &mdash; designs, decisions, lessons learned. Scry captures it at the moment it&rsquo;s made: a short structured note &mdash; a <em>marker</em> &mdash; written into the file itself. A background indexer turns every marker into a row in a small local database. A later session doesn&rsquo;t grep and hope; it asks a direct question and gets a direct answer.</p>
+
+    <div class="panel-row">
+      <div class="panel">
+        <div class="panel-head">Without scry</div>
+        <div class="panel-body">
+          <p>A new session needs to know why an earlier one chose the retry strategy it did. The reasoning lives in a design note from several sessions back &mdash; but nothing tells this session that note exists. It reads through the code, reconstructs an answer, and sometimes quietly contradicts the original decision.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">With scry</div>
+        <div class="panel-body">
+          <p>The same session asks the marker index one question and the original note comes back &mdash; the decision, the reasoning, the file it lives in. No grep, no guessing, no re-derivation. It continues from where the last session left off.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
