@@ -4,3 +4,5 @@ node_modules/
 *.log
 .env
 .env.*
+# reflection runtime artifact — leaks in when the substrate links this repo
+agent/
