@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>scry — Agent memory you query in SQL</title>
+<meta name="description" content="Markers in your files, indexed live, queryable cold. The disk is the database. The SQL is the cache.">
+<meta property="og:title" content="scry — Agent memory you query in SQL">
+<meta property="og:description" content="Markers in your files, indexed live, queryable cold. The disk is the database. The SQL is the cache.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://scryspec.com/">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230b0b0e'/><text x='16' y='22' text-anchor='middle' font-family='Iosevka,Menlo,monospace' font-size='18' fill='%23e8e6df'>s</text></svg>">
+<style>
+  :root {
+    --bg:         #0b0b0e;
+    --bg-elev:    #14141a;
+    --bg-panel:   #16171d;
+    --bg-quote:   #181924;
+    --ink:        #e8e6df;
+    --ink-muted:  #a9a69a;
+    --ink-dim:    #6f6c63;
+    --rule:       #2a2a32;
+    --rule-soft:  #1d1d24;
+    --accent:     #d6c98a;
+    --code-key:   #d6c98a;
+    --code-str:   #b8d4a8;
+    --code-com:   #6f6c63;
+    --code-fn:    #a8c8e8;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-serif, "Iowan Old Style", "Apple Garamond", "Palatino Linotype", "Times New Roman", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  .narrow { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+  /* Section rhythm */
+  section { padding: 88px 0; border-top: 1px solid var(--rule-soft); }
+  section:first-of-type { border-top: 0; }
+  section > .wrap > h2,
+  section > .narrow > h2 {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 24px 0;
+    font-weight: 600;
+  }
+
+  p { margin: 0 0 1em 0; }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(214,201,138,0.25); }
+  a:hover { border-bottom-color: var(--accent); }
+  code, pre, .mono {
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14px;
+  }
+
+  /* Hero */
+  header.hero {
+    padding: 132px 0 96px;
+    border-top: 0;
+  }
+  .hero h1 {
+    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(28px, 4.4vw, 44px);
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px 0;
+    color: var(--ink);
+  }
+  .hero .lede {
+    font-size: clamp(18px, 2.1vw, 22px);
+    color: var(--ink-muted);
+    margin: 0 0 8px 0;
+    line-height: 1.45;
+  }
+  .hero .epigram {
+    font-size: clamp(18px, 2.1vw, 22px);
+    color: var(--ink);
+    margin: 0 0 36px 0;
+    line-height: 1.45;
+    font-style: italic;
+  }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: border-color 120ms;
+  }
+  .btn.primary { background: var(--accent); color: #1a1a1f; border-color: var(--accent); }
+  .btn:hover { border-color: var(--accent); }
+
+  /* Formal-definition callout (the page's one pinned, quotable block) */
+  .definition {
+    background: var(--bg-quote);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    margin: 28px 0;
+    color: var(--ink);
+    font-size: 16.5px;
+    line-height: 1.55;
+  }
+  .definition strong { color: var(--accent); font-weight: 600; }
+
+  /* Two-column code panel (marker / SQL) */
+  .panel-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 4px 0 28px 0;
+  }
+  @media (max-width: 720px) {
+    .panel-row { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--rule);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    background: var(--bg-elev);
+  }
+  .panel pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.5;
+    color: var(--ink);
+    white-space: pre;
+  }
+  .panel pre .c-com { color: var(--code-com); font-style: italic; }
+  .panel pre .c-key { color: var(--code-key); }
+  .panel pre .c-str { color: var(--code-str); }
+  .panel pre .c-fn  { color: var(--code-fn); }
+
+  /* Case-study tiles */
+  .case-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 12px 0 24px 0;
+  }
+  @media (max-width: 720px) { .case-grid { grid-template-columns: 1fr; } }
+  .case {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px 22px 20px;
+  }
+  .case .stat {
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, Menlo, monospace;
+    font-size: 32px;
+    color: var(--accent);
+    margin: 0 0 6px 0;
+    line-height: 1.1;
+  }
+  .case .label {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 10px;
+  }
+  .case .note {
+    font-size: 14.5px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  table.dist {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 6px;
+    font-size: 14.5px;
+  }
+  table.dist td, table.dist th {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--rule-soft);
+    text-align: left;
+  }
+  table.dist td.n {
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, Menlo, monospace;
+    color: var(--ink);
+    text-align: right;
+    width: 5em;
+  }
+  table.dist td.k { color: var(--ink-muted); font-family: ui-sans-serif, system-ui, sans-serif; }
+  table.dist th {
+    color: var(--ink-dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* Single-column code panel for [Code example] */
+  .codeblock {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin: 14px 0;
+    overflow: hidden;
+  }
+  .codeblock pre { margin: 0; padding: 16px 18px; overflow-x: auto; line-height: 1.55; }
+
+  /* Install steps */
+  ol.steps { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+  ol.steps > li {
+    counter-increment: step;
+    margin: 16px 0;
+    padding-left: 36px;
+    position: relative;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 24px; height: 24px;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  /* Spec section + small layering pull */
+  .pull {
+    border-left: 2px solid var(--rule);
+    padding: 4px 0 4px 18px;
+    color: var(--ink-muted);
+    font-style: italic;
+    margin: 18px 0;
+  }
+
+  footer.foot {
+    padding: 56px 0 72px;
+    border-top: 1px solid var(--rule-soft);
+    color: var(--ink-dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  footer.foot ul {
+    list-style: none; padding: 0; margin: 0 0 12px 0;
+    display: flex; gap: 22px; flex-wrap: wrap;
+  }
+  footer.foot a { color: var(--ink-muted); border-bottom-color: transparent; }
+  footer.foot a:hover { color: var(--ink); border-bottom-color: var(--ink-muted); }
+
+  /* Subtle source-attribution line under case-study block */
+  .source {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink-dim);
+    font-size: 12.5px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ──────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="narrow">
+    <h1>scry &mdash; Agent memory you query in SQL.</h1>
+    <p class="lede">Markers in your files, indexed live, queryable cold.</p>
+    <p class="epigram">The disk is the database. The SQL is the cache.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="#install">Install</a>
+      <a class="btn" href="#spec">Read the spec</a>
+    </div>
+  </div>
+</header>
+
+<!-- ─── PROBLEM ──────────────────────────────────────────────── -->
+<section id="problem">
+  <div class="narrow">
+    <h2>The problem</h2>
+    <p>The preeminent problem in agentic coding and more broader agentic space in general is what is becoming known as the &ldquo;agent context problem.&rdquo;</p>
+
+    <div class="definition">
+      <strong>The agent context problem:</strong> an agent&rsquo;s persisted knowledge is unbounded and accrues across sessions, while the context available to it in any single session is finite. Because the precise knowledge a task requires cannot be fully determined before the task is under way, each session must approximate a <em>selection-and-presentation function</em> &mdash; which subset of the corpus to surface, and in what form &mdash; under a fixed budget in which omitting needed knowledge and admitting irrelevant knowledge are both costly.
+    </div>
+
+    <p>Every point of information an agent could ever need in a future session can be captured &mdash; but what aspects of that knowledge to surface to an agent and how to surface it remain the lynchpin of the agent context problem. The scry marker specification attempts to address some of the surface of the agent context problem as it relates specifically to agentic coding.</p>
+  </div>
+</section>
+
+<!-- ─── MARKER MODEL ─────────────────────────────────────────── -->
+<section id="marker-model">
+  <div class="wrap">
+    <h2>The marker model</h2>
+
+    <div class="panel-row">
+      <div class="panel">
+        <div class="panel-head">@scry.entry — in the file</div>
+<pre><span class="c-com">&lt;!-- @scry.entry</span>
+<span class="c-key">id:</span> <span class="c-str">design.auth-flow~9eb0fd7e</span>
+<span class="c-key">kind:</span> <span class="c-str">design</span>
+<span class="c-key">status:</span> <span class="c-str">active</span>
+<span class="c-key">weight:</span> <span class="c-str">0.9</span>
+<span class="c-key">tags:</span>
+  - <span class="c-str">"topic:auth"</span>
+  - <span class="c-str">"auth"</span>
+<span class="c-key">summary:</span> &gt;
+  JWT auth middleware, validates
+  bearer tokens. Also: JWT,
+  bearer-token, auth-guard,
+  refresh-flow.
+<span class="c-key">applies:</span> adding protected
+  endpoints, modifying auth
+<span class="c-key">seeded_questions:</span>
+  - <span class="c-str">"What is the JWT refresh flow?"</span>
+  - <span class="c-str">"JWT bearer token validation"</span>
+<span class="c-com">@scry.entry.end --&gt;</span></pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head">scry_sql — from another wake</div>
+<pre><span class="c-key">SELECT</span> id, summary
+<span class="c-key">FROM</span>   scry__doc
+<span class="c-key">WHERE</span>  kind = <span class="c-str">'design'</span>
+  <span class="c-key">AND</span>  id <span class="c-key">IN</span> (
+    <span class="c-key">SELECT</span> doc_id
+    <span class="c-key">FROM</span>   scry__doc_tag
+    <span class="c-key">WHERE</span>  tag = <span class="c-str">'topic:auth'</span>
+  )
+<span class="c-key">ORDER BY</span> weight <span class="c-key">DESC</span>;
+
+<span class="c-com">-- or, full-text:</span>
+<span class="c-key">SELECT</span> id, summary
+<span class="c-key">FROM</span>   scry__doc_fts
+<span class="c-key">WHERE</span>  scry__doc_fts <span class="c-key">MATCH</span>
+       <span class="c-str">'JWT refresh flow'</span>
+<span class="c-key">ORDER BY</span> rank;</pre>
+      </div>
+    </div>
+
+    <p>Scry markers are written for agents by agents. Every artifact an agent produces &mdash; a design, a spec, documentation, even a code file &mdash; carries a marker, written into the file itself and authored to be found: its summary, tags, and seeded questions shaped the way a later search will reach for them. Scry indexes those markers into a SQLite cache the next agent retrieves with a line of SQL &mdash; full-text-searched, deterministic, no LLM in the query path. The hard choice &mdash; which knowledge is worth surfacing &mdash; is made once, at write time, by the agent that did the work; recall is just a query against what was already judged worth keeping.</p>
+  </div>
+</section>
+
+<!-- ─── CASE STUDIES ─────────────────────────────────────────── -->
+<section id="case-studies">
+  <div class="wrap">
+    <h2>Case studies</h2>
+    <p>Reflection, a 100+ track autonomous substrate, runs scry in production. The numbers below are queried live from reflection&rsquo;s own <code>project.db</code> at the time this page was deployed.</p>
+
+    <div class="case-grid">
+      <div class="case">
+        <div class="label">Marker corpus</div>
+        <p class="stat">2,707</p>
+        <p class="note">curated <code>@scry.entry</code> markers across 10,115 indexed files. 2,674 files carry their own marker; the remainder are body-indexed only.</p>
+      </div>
+      <div class="case">
+        <div class="label">Searchable surface</div>
+        <p class="stat">17,663</p>
+        <p class="note">tags on the corpus (3,716 unique), plus 8,415 seeded questions and 1,174 distinct <code>topic:</code> classifiers &mdash; each one a query an agent already shaped against future-itself.</p>
+      </div>
+      <div class="case">
+        <div class="label">Authoring throughput</div>
+        <p class="stat">198</p>
+        <p class="note">markers minted by reflection&rsquo;s wakes on a single day (2026-05-19). The graph grows by the work the system does, not by a separate documentation pass.</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-dim); font-family:ui-sans-serif,system-ui,sans-serif; font-weight:600; margin: 28px 0 12px;">Shape of the corpus</h3>
+    <table class="dist">
+      <thead><tr><th>kind</th><th style="text-align:right">count</th><th>what it is</th></tr></thead>
+      <tbody>
+        <tr><td class="k">report</td>    <td class="n">2,013</td><td class="k">wake-report records &mdash; what happened in a session and why</td></tr>
+        <tr><td class="k">internal</td>  <td class="n">267</td>  <td class="k">runtime fixtures &mdash; track wake files, control surfaces, contracts</td></tr>
+        <tr><td class="k">design</td>    <td class="n">127</td>  <td class="k">current-truth design docs</td></tr>
+        <tr><td class="k">pattern</td>   <td class="n">107</td>  <td class="k">canonical recipes &mdash; &ldquo;the way to do Z&rdquo;</td></tr>
+        <tr><td class="k">spec</td>      <td class="n">54</td>   <td class="k">authoritative contracts</td></tr>
+        <tr><td class="k">research</td>  <td class="n">41</td>   <td class="k">findings + sources from investigation wakes</td></tr>
+        <tr><td class="k">code</td>      <td class="n">40</td>   <td class="k">code-file markers</td></tr>
+        <tr><td class="k">task</td>      <td class="n">24</td>   <td class="k">discrete work items</td></tr>
+        <tr><td class="k">lesson</td>    <td class="n">22</td>   <td class="k">&ldquo;I tried X, here&rsquo;s why it failed&rdquo;</td></tr>
+        <tr><td class="k">audit</td>     <td class="n">7</td>    <td class="k">conformance audits</td></tr>
+        <tr><td class="k">milestone</td> <td class="n">4</td>    <td class="k">phase markers</td></tr>
+      </tbody>
+    </table>
+    <p class="source">Source: <code>reflection</code> &mdash; the 100+ track autonomous substrate that developed and runs scry. Numbers are a live snapshot at deploy time.</p>
+
+    <p style="margin-top: 28px;">scry was built using the substrate that uses it. The corpus above is what reflection has accumulated, addressed against itself, and recalled from across wakes; it is also the corpus the next reflection wake will query before deciding what to do.</p>
+  </div>
+</section>
+
+<!-- ─── CODE EXAMPLE ─────────────────────────────────────────── -->
+<section id="code-example">
+  <div class="narrow">
+    <h2>The query, end to end</h2>
+    <p>Below is the same marker / SQL pair as above, expanded into a shape you can copy and run. The marker lives at the top of the file; the SQL runs against the SQLite cache <code>scry init</code> created in your project.</p>
+
+    <div class="codeblock">
+<pre><span class="c-com"># In agent/design/auth-flow.md</span>
+<span class="c-com">&lt;!-- @scry.entry</span>
+<span class="c-key">id:</span> <span class="c-str">design.auth-flow~9eb0fd7e</span>
+<span class="c-key">kind:</span> <span class="c-str">design</span>
+<span class="c-key">status:</span> <span class="c-str">active</span>
+<span class="c-key">weight:</span> <span class="c-str">0.9</span>
+<span class="c-key">tags:</span> [<span class="c-str">"topic:auth"</span>, <span class="c-str">"auth"</span>, <span class="c-str">"scope:runtime"</span>]
+<span class="c-key">summary:</span> &gt;
+  JWT auth middleware, validates bearer tokens. Also:
+  JWT, bearer-token, auth-guard, refresh-flow.
+<span class="c-key">applies:</span> adding protected endpoints, modifying auth
+<span class="c-key">seeded_questions:</span>
+  - <span class="c-str">"What is the JWT refresh flow?"</span>
+  - <span class="c-str">"JWT bearer token validation"</span>
+<span class="c-com">@scry.entry.end --&gt;</span>
+
+<span class="c-com"># In a future wake, scry_sql:</span>
+<span class="c-key">SELECT</span> d.id, d.summary
+<span class="c-key">FROM</span>   scry__doc d
+<span class="c-key">JOIN</span>   scry__doc_tag t <span class="c-key">ON</span> t.doc_id = d.id
+<span class="c-key">WHERE</span>  t.tag = <span class="c-str">'topic:auth'</span>
+  <span class="c-key">AND</span>  d.status = <span class="c-str">'active'</span>
+<span class="c-key">ORDER BY</span> d.weight <span class="c-key">DESC</span>;</pre>
+    </div>
+
+    <p>One row comes back, every time. No vector store. No re-rank. No LLM in the query path. The marker fields decided what would be found before any future agent went looking; the SQL is just the lookup that honors that decision.</p>
+  </div>
+</section>
+
+<!-- ─── INSTALL ──────────────────────────────────────────────── -->
+<section id="install">
+  <div class="narrow">
+    <h2>Install</h2>
+    <ol class="steps">
+      <li>
+        <p><strong>Install the MCP server.</strong></p>
+        <div class="codeblock"><pre>uv tool install scry-mcp
+<span class="c-com"># or:</span>
+pip install scry-mcp</pre></div>
+      </li>
+      <li>
+        <p><strong>Add scry to your agent&rsquo;s MCP config.</strong></p>
+        <div class="codeblock"><pre>{
+  <span class="c-str">"mcpServers"</span>: {
+    <span class="c-str">"scry"</span>: {
+      <span class="c-str">"command"</span>: <span class="c-str">"scry-mcp"</span>
+    }
+  }
+}</pre></div>
+      </li>
+      <li>
+        <p><strong>Initialize scry in your project.</strong></p>
+        <div class="codeblock"><pre>cd path/to/your/project
+scry init</pre></div>
+        <p style="color:var(--ink-muted); font-size: 15px; margin-top: 4px;">A <code>project.db</code> appears in the working directory; the watcher begins indexing markers as files are saved.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ─── THE SPEC ─────────────────────────────────────────────── -->
+<section id="spec">
+  <div class="narrow">
+    <h2>The spec</h2>
+    <p><strong>scry-spec v1.1</strong> &mdash; the versioned Scry Marker Contract. Defines the three marker kinds (<code>@scry.entry</code>, <code>@scry.anchor</code>, <code>@scry.bind</code>), the required and optional fields, and the resolution rules for binding references. Versioned independently from any implementation.</p>
+
+    <p class="pull">SQL is scry&rsquo;s answer, not the spec&rsquo;s mandate &mdash; scry-spec defines the marker; scry is the implementation that makes it queryable. A different implementation could index the same marker corpus into embeddings and serve recall by similarity; RAG, in that sense, is a possible implementation of the marker contract rather than a peer alternative to it.</p>
+
+    <p><a href="https://github.com/prmichaelsen/scry-spec">Read scry-spec v1.1 &rarr;</a></p>
+  </div>
+</section>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────── -->
+<footer class="foot">
+  <div class="wrap">
+    <ul>
+      <li><a href="https://github.com/prmichaelsen/scry">GitHub: scry</a></li>
+      <li><a href="https://github.com/prmichaelsen/scry-spec">GitHub: scry-spec</a></li>
+      <li><a href="https://pypi.org/project/scry-mcp/">PyPI: scry-mcp</a></li>
+      <li><a href="mailto:inbox@theterminal.chat">Contact</a></li>
+    </ul>
+    <p style="margin: 8px 0 0 0;">scry is developed and operated by reflection. The disk is the database. The SQL is the cache.</p>
+  </div>
+</footer>
+
+</body>
+</html>
