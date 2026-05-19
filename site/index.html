@@ -283,6 +283,116 @@
     font-size: 12.5px;
     margin-top: 4px;
   }
+
+  /* ─── Marker playground ─────────────────────────────────────── */
+  .playground {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0 0;
+  }
+  @media (max-width: 760px) {
+    .playground { grid-template-columns: 1fr; }
+  }
+  .playground .pg-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .playground .pg-head {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--rule);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+  .playground textarea#pg-input {
+    width: 100%;
+    min-height: 360px;
+    box-sizing: border-box;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--ink);
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    padding: 14px 16px;
+    resize: vertical;
+    tab-size: 2;
+  }
+  .pg-output {
+    padding: 14px 16px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 360px;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .pg-row {
+    display: grid;
+    grid-template-columns: 8.5em 1fr;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--rule-soft);
+  }
+  .pg-row:last-child { border-bottom: 0; }
+  .pg-key {
+    color: var(--ink-dim);
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding-top: 1px;
+  }
+  .pg-val {
+    color: var(--ink);
+    word-break: break-word;
+  }
+  .pg-val code {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule-soft);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .pg-val ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .pg-val ul li { margin: 2px 0; }
+  .pg-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--rule-soft);
+    border-radius: 3px;
+    padding: 1px 7px;
+    margin: 2px 4px 2px 0;
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .pg-empty { color: var(--ink-dim); font-style: italic; }
+  .pg-error {
+    color: #d77a6a;
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+  }
+  .pg-foot {
+    color: var(--ink-dim);
+    font-size: 12.5px;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
@@ -414,6 +524,41 @@
   </div>
 </section>
 
+<!-- ─── MARKER PLAYGROUND ────────────────────────────────────── -->
+<section id="playground">
+  <div class="wrap">
+    <h2>Try a marker</h2>
+    <p>Paste an <code>@scry.entry</code> marker on the left. The parser runs in your browser &mdash; no network call, no LLM &mdash; and shows the structured row scry would insert into <code>scry__doc</code>. That row is what the next agent recalls with a single SQL query, in any wake, indefinitely.</p>
+
+    <div class="playground">
+      <div class="pg-panel">
+        <div class="pg-head">marker source</div>
+        <textarea id="pg-input" spellcheck="false" autocomplete="off"><!-- @scry.entry
+id: design.auth-flow~9eb0fd7e
+kind: design
+status: active
+weight: 0.9
+tags:
+  - "topic:auth"
+  - "auth"
+summary: >
+  JWT auth middleware, validates bearer tokens.
+  Also: JWT, bearer-token, auth-guard, refresh-flow.
+applies: adding protected endpoints, modifying auth
+seeded_questions:
+  - "What is the JWT refresh flow?"
+  - "JWT bearer token validation"
+@scry.entry.end --></textarea>
+      </div>
+      <div class="pg-panel">
+        <div class="pg-head">parsed row &middot; scry__doc</div>
+        <div class="pg-output" id="pg-output"></div>
+      </div>
+    </div>
+    <p class="pg-foot">The parser implements the same sentinel + comment-prefix-strip + YAML body rules as <code>scry-parse</code>. Edit the marker and the row updates live. The contract is plain enough that the entire scoped parser fits on this page; the production parser adds anchors, bindings, diagnostics, and FR-conformance coverage.</p>
+  </div>
+</section>
+
 <!-- ─── CODE EXAMPLE ─────────────────────────────────────────── -->
 <section id="code-example">
   <div class="narrow">
@@ -505,6 +650,176 @@ scry init</pre></div>
     <p style="margin: 8px 0 0 0;">scry is developed and operated by reflection. The disk is the database. The SQL is the cache.</p>
   </div>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script>
+(function () {
+  var input = document.getElementById('pg-input');
+  var output = document.getElementById('pg-output');
+  if (!input || !output) return;
+
+  // ── Minimal scoped @scry.entry parser ──
+  // Mirrors the canonical sentinel + comment-prefix-strip + YAML body shape
+  // from scry-parse / scry-parse-ts. Scoped: entries only.
+  var KEY_RE = /^(.*?)([A-Za-z_][A-Za-z0-9_-]*\s*:)/;
+  var PREFIX_VALID = /^[\s#/*\->]*$/;
+
+  function stripSentinelWrappers(line) {
+    return line
+      .replace(/^\s*(?:<!--\s*|\/\*+\s*|\*+\s*|\/\/+\s*|#+\s*|--+\s*|;;+\s*|;\s*)/, '')
+      .replace(/\s*(?:-->\s*|\*\/\s*)$/, '')
+      .trim();
+  }
+
+  function isEntryOpen(line) {
+    return /^@scry\.entry\s*$/.test(stripSentinelWrappers(line));
+  }
+  function isEntryClose(line) {
+    return /^@scry\.entry\.end\s*$/.test(stripSentinelWrappers(line));
+  }
+
+  function inferPrefix(lines) {
+    for (var i = 0; i < lines.length; i++) {
+      var m = KEY_RE.exec(lines[i]);
+      if (m && PREFIX_VALID.test(m[1])) return m[1];
+    }
+    return '';
+  }
+
+  function stripPrefix(bodyLines) {
+    var prefix = inferPrefix(bodyLines);
+    if (!prefix) return bodyLines.join('\n');
+    var rstripped = prefix.replace(/\s+$/, '');
+    return bodyLines.map(function (ln) {
+      if (ln.indexOf(prefix) === 0) return ln.slice(prefix.length);
+      if (ln.trim() === '') return '';
+      if (rstripped && ln.indexOf(rstripped) === 0) {
+        return ln.slice(rstripped.length).replace(/^ /, '');
+      }
+      return ln;
+    }).join('\n');
+  }
+
+  function parseEntry(text) {
+    var lines = text.split('\n');
+    var openIdx = -1, closeIdx = -1;
+    for (var i = 0; i < lines.length; i++) {
+      if (isEntryOpen(lines[i])) { openIdx = i; break; }
+    }
+    if (openIdx < 0) {
+      return { error: 'No @scry.entry sentinel found.\nExpected an opening line like:\n  <!-- @scry.entry' };
+    }
+    for (var j = openIdx + 1; j < lines.length; j++) {
+      if (isEntryClose(lines[j])) { closeIdx = j; break; }
+    }
+    if (closeIdx < 0) {
+      return { error: 'No @scry.entry.end sentinel found.\nThe marker must be closed:\n  @scry.entry.end -->' };
+    }
+    var body = stripPrefix(lines.slice(openIdx + 1, closeIdx));
+    var obj;
+    try {
+      obj = jsyaml.load(body);
+    } catch (e) {
+      return { error: 'YAML parse error: ' + e.message };
+    }
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+      return { error: 'Marker body did not parse as a YAML mapping.' };
+    }
+    return { ok: true, fields: obj };
+  }
+
+  // ── Rendering ──
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Same field order scry's SQL schema uses for scry__doc, with the joined
+  // tags / seeded_questions surfaced inline.
+  var ORDER = [
+    'id', 'kind', 'status', 'weight', 'tags',
+    'summary', 'rationale', 'applies', 'seeded_questions',
+    'depends_on', 'implements', 'supersedes', 'extras'
+  ];
+
+  function renderVal(key, val) {
+    if (val == null || val === '') {
+      return '<span class="pg-empty">(empty)</span>';
+    }
+    if (Array.isArray(val)) {
+      if (val.length === 0) return '<span class="pg-empty">[]</span>';
+      if (key === 'tags') {
+        return val.map(function (t) {
+          return '<span class="pg-tag">' + escapeHtml(t) + '</span>';
+        }).join('');
+      }
+      return '<ul>' + val.map(function (item) {
+        return '<li>' + escapeHtml(item) + '</li>';
+      }).join('') + '</ul>';
+    }
+    if (typeof val === 'object') {
+      // extras map
+      var keys = Object.keys(val);
+      if (keys.length === 0) return '<span class="pg-empty">{}</span>';
+      return '<ul>' + keys.map(function (k) {
+        return '<li><code>' + escapeHtml(k) + '</code>: ' + escapeHtml(String(val[k])) + '</li>';
+      }).join('') + '</ul>';
+    }
+    if (key === 'id' || key === 'kind' || key === 'status') {
+      return '<code>' + escapeHtml(val) + '</code>';
+    }
+    return escapeHtml(String(val));
+  }
+
+  function renderRow(fields) {
+    var html = '';
+    // Canonical scry order first
+    var seen = {};
+    ORDER.forEach(function (k) {
+      seen[k] = true;
+      if (k in fields) {
+        html += '<div class="pg-row"><div class="pg-key">' + k + '</div>' +
+                '<div class="pg-val">' + renderVal(k, fields[k]) + '</div></div>';
+      }
+    });
+    // Unknown fields preserved last (FR4.A: parsers MUST preserve unknown keys)
+    Object.keys(fields).forEach(function (k) {
+      if (!seen[k]) {
+        html += '<div class="pg-row"><div class="pg-key">' + escapeHtml(k) +
+                ' <span style="opacity:0.6">(extra)</span></div>' +
+                '<div class="pg-val">' + renderVal(k, fields[k]) + '</div></div>';
+      }
+    });
+    return html;
+  }
+
+  function update() {
+    var res = parseEntry(input.value);
+    if (res.error) {
+      output.innerHTML = '<div class="pg-error">' + escapeHtml(res.error) + '</div>';
+    } else {
+      output.innerHTML = renderRow(res.fields);
+    }
+  }
+
+  input.addEventListener('input', update);
+  // Initial render
+  if (window.jsyaml) {
+    update();
+  } else {
+    // js-yaml loads from CDN; wait for it
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (window.jsyaml) { clearInterval(iv); update(); }
+      else if (++tries > 50) {
+        clearInterval(iv);
+        output.innerHTML = '<div class="pg-error">Failed to load YAML parser. Check your network connection.</div>';
+      }
+    }, 100);
+  }
+})();
+</script>
 
 </body>
 </html>
