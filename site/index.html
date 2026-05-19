@@ -94,6 +94,23 @@
     font-style: italic;
     letter-spacing: 0.005em;
   }
+  .hero .gloss {
+    font-size: clamp(12px, 1.1vw, 13px);
+    color: var(--ink-dim);
+    margin: 14px 0 0 0;
+    line-height: 1.5;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    opacity: 0.85;
+  }
+  .audience {
+    font-size: clamp(15px, 1.5vw, 17px);
+    color: var(--ink-muted);
+    margin: 0 0 22px 0;
+    line-height: 1.55;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
 
   /* Formal-definition callout (the page's one pinned, quotable block) */
   .definition {
@@ -397,6 +414,7 @@
     <h1>scry &mdash; Agent memory you query in SQL.</h1>
     <p class="lede">Markers in your files, indexed live, queryable cold.</p>
     <p class="epigram">The disk is the database. The SQL is the cache.</p>
+    <p class="gloss">Cold &mdash; from a fresh session with no prior context loaded.</p>
   </div>
 </header>
 
@@ -404,13 +422,33 @@
 <section id="problem">
   <div class="narrow">
     <h2>The problem</h2>
+    <p class="audience">scry is for developers building and running long-lived AI coding agents &mdash; systems that work across many sessions on the same codebase, accumulating knowledge faster than any single session can hold.</p>
+
     <p>The preeminent problem in agentic coding and more broader agentic space in general is what is becoming known as the &ldquo;agent context problem.&rdquo;</p>
 
     <div class="definition">
-      <strong>The agent context problem:</strong> an agent&rsquo;s persisted knowledge is unbounded and accrues across sessions, while the context available to it in any single session is finite. Because the precise knowledge a task requires cannot be fully determined before the task is under way, each session must approximate a <em>selection-and-presentation function</em> &mdash; which subset of the corpus to surface, and in what form &mdash; under a fixed budget in which omitting needed knowledge and admitting irrelevant knowledge are both costly.
+      <strong>The agent context problem:</strong> an agent&rsquo;s persisted knowledge is unbounded and accrues across sessions, while the context available to it in any single session is finite. Because the precise knowledge a task requires cannot be fully determined before the task is under way, each session must approximate a <em>selection-and-presentation function</em> &mdash; which subset of the corpus &mdash; the full body of knowledge an agent has accumulated across sessions &mdash; to surface, and in what form &mdash; under a fixed budget in which omitting needed knowledge and admitting irrelevant knowledge are both costly.
     </div>
 
     <p>Every point of information an agent could ever need in a future session can be captured &mdash; but what aspects of that knowledge to surface to an agent and how to surface it remain the lynchpin of the agent context problem. The scry marker specification attempts to address some of the surface of the agent context problem as it relates specifically to agentic coding.</p>
+  </div>
+</section>
+
+<!-- ─── OTHER ATTEMPTS ───────────────────────────────────────── -->
+<section id="other-attempts">
+  <div class="narrow">
+    <h2>Other attempts</h2>
+    <p>The agent context problem is not new, and scry is not the first attempt at it. The approaches that came before each address a real part of it &mdash; and each leaves a different part unsolved.</p>
+
+    <p><strong>Larger context windows.</strong> The simplest answer: make the budget bigger. But the corpus grows without bound while any window, however large, stays finite &mdash; and a larger window dilutes attention across more tokens, raising the cost of the irrelevant knowledge that gets admitted. A bigger budget moves the line; it does not remove it.</p>
+
+    <p><strong>Retrieval-augmented generation.</strong> Embed the corpus, retrieve by vector similarity at query time. This is the closest prior art, and scry shares its instinct &mdash; surface a subset, not the whole. But similarity is not relevance: an embedding match returns what is <em>near</em> the query, not what <em>answers</em> it, and the retrieval step is itself a model call &mdash; non-deterministic and unauditable. Two identical questions can return different context.</p>
+
+    <p><strong>Hand-maintained memory files.</strong> A <code>CLAUDE.md</code>, an <code>AGENTS.md</code>, a notes file the agent reads at the start of every session. These work until the corpus outgrows the file: everything is loaded every time, relevant or not, and a human must curate what stays. It is a context budget with no selection function &mdash; only an ever-growing fixed cost.</p>
+
+    <p><strong>Grep.</strong> Search the codebase directly. Grep is deterministic and needs no index, but it searches <em>text</em>, not <em>meaning</em> &mdash; it finds the files that contain a string, not the files that answer a question, and it cannot rank a load-bearing design note above an incidental mention. The agent still reads, reconstructs, guesses.</p>
+
+    <p>Scry takes the deterministic, no-model retrieval of grep and gives it a curated, meaning-shaped index: markers authored to be found, indexed into a structured cache, queried in SQL. The selection function is explicit, the query path has no LLM in it, and the same question always returns the same answer.</p>
   </div>
 </section>
 
@@ -466,7 +504,7 @@
 <span class="c-com">@scry.entry.end --&gt;</span></pre>
       </div>
       <div class="panel">
-        <div class="panel-head">scry_sql — from another wake</div>
+        <div class="panel-head">scry_sql — from another session</div>
 <pre><span class="c-key">SELECT</span> id, summary
 <span class="c-key">FROM</span>   scry__doc
 <span class="c-key">WHERE</span>  kind = <span class="c-str">'design'</span>
@@ -510,7 +548,7 @@
       <div class="case">
         <div class="label">Authoring throughput</div>
         <p class="stat">198</p>
-        <p class="note">markers minted by reflection&rsquo;s wakes on a single day (2026-05-19). The graph grows by the work the system does, not by a separate documentation pass.</p>
+        <p class="note">markers minted by reflection&rsquo;s sessions on a single day (2026-05-19). The graph grows by the work the system does, not by a separate documentation pass.</p>
       </div>
     </div>
 
@@ -518,12 +556,12 @@
     <table class="dist">
       <thead><tr><th>kind</th><th style="text-align:right">count</th><th>what it is</th></tr></thead>
       <tbody>
-        <tr><td class="k">report</td>    <td class="n">2,013</td><td class="k">wake-report records &mdash; what happened in a session and why</td></tr>
-        <tr><td class="k">internal</td>  <td class="n">267</td>  <td class="k">runtime fixtures &mdash; track wake files, control surfaces, contracts</td></tr>
+        <tr><td class="k">report</td>    <td class="n">2,013</td><td class="k">session-report records &mdash; what happened in a session and why</td></tr>
+        <tr><td class="k">internal</td>  <td class="n">267</td>  <td class="k">runtime fixtures &mdash; track session files, control surfaces, contracts</td></tr>
         <tr><td class="k">design</td>    <td class="n">127</td>  <td class="k">current-truth design docs</td></tr>
         <tr><td class="k">pattern</td>   <td class="n">107</td>  <td class="k">canonical recipes &mdash; &ldquo;the way to do Z&rdquo;</td></tr>
         <tr><td class="k">spec</td>      <td class="n">54</td>   <td class="k">authoritative contracts</td></tr>
-        <tr><td class="k">research</td>  <td class="n">41</td>   <td class="k">findings + sources from investigation wakes</td></tr>
+        <tr><td class="k">research</td>  <td class="n">41</td>   <td class="k">findings + sources from investigation sessions</td></tr>
         <tr><td class="k">code</td>      <td class="n">40</td>   <td class="k">code-file markers</td></tr>
         <tr><td class="k">task</td>      <td class="n">24</td>   <td class="k">discrete work items</td></tr>
         <tr><td class="k">lesson</td>    <td class="n">22</td>   <td class="k">&ldquo;I tried X, here&rsquo;s why it failed&rdquo;</td></tr>
@@ -533,7 +571,7 @@
     </table>
     <p class="source">Source: <code>reflection</code> &mdash; the 100+ track autonomous substrate that developed and runs scry. Numbers are a live snapshot at deploy time.</p>
 
-    <p style="margin-top: 28px;">scry was built using the substrate that uses it. The corpus above is what reflection has accumulated, addressed against itself, and recalled from across wakes; it is also the corpus the next reflection wake will query before deciding what to do.</p>
+    <p style="margin-top: 28px;">scry was built using the substrate that uses it. The corpus above is what reflection has accumulated, addressed against itself, and recalled from across sessions; it is also the corpus the next reflection session will query before deciding what to do.</p>
   </div>
 </section>
 
@@ -541,7 +579,7 @@
 <section id="playground">
   <div class="wrap">
     <h2>Try a marker</h2>
-    <p>Paste an <code>@scry.entry</code> marker on the left. The parser runs in your browser &mdash; no network call, no LLM &mdash; and shows the structured row scry would insert into <code>scry__doc</code>. That row is what the next agent recalls with a single SQL query, in any wake, indefinitely.</p>
+    <p>Paste an <code>@scry.entry</code> marker on the left. The parser runs in your browser &mdash; no network call, no LLM &mdash; and shows the structured row scry would insert into <code>scry__doc</code>. That row is what the next agent recalls with a single SQL query, in any session, indefinitely.</p>
 
     <div class="playground">
       <div class="pg-panel">
@@ -595,7 +633,7 @@ seeded_questions:
   - <span class="c-str">"JWT bearer token validation"</span>
 <span class="c-com">@scry.entry.end --&gt;</span>
 
-<span class="c-com"># In a future wake, scry_sql:</span>
+<span class="c-com"># In a future session, scry_sql:</span>
 <span class="c-key">SELECT</span> d.id, d.summary
 <span class="c-key">FROM</span>   scry__doc d
 <span class="c-key">JOIN</span>   scry__doc_tag t <span class="c-key">ON</span> t.doc_id = d.id
