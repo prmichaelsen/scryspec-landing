@@ -21,11 +21,20 @@
     --ink-dim:    #6f6c63;
     --rule:       #2a2a32;
     --rule-soft:  #1d1d24;
-    --accent:     #d6c98a;
-    --code-key:   #d6c98a;
+    /* Three-color brand system:
+       primary (purple) — wordmark, headings, primary links, emphasis
+       accent  (cyan)   — hover, secondary highlights, YAML keys
+       sql-kw  (magenta)— SQL reserved words in code blocks */
+    --color-primary: #a855f7;
+    --color-accent:  #22d3ee;
+    --color-sql-kw:  #ec4899;
+    /* Legacy aliases retained so unconverted rules still resolve. */
+    --accent:     var(--color-primary);
+    --code-key:   var(--color-accent);
+    --code-sql:   var(--color-sql-kw);
     --code-str:   #b8d4a8;
     --code-com:   #6f6c63;
-    --code-fn:    #a8c8e8;
+    --code-fn:    var(--color-accent);
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -58,8 +67,8 @@
   }
 
   p { margin: 0 0 1em 0; }
-  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(214,201,138,0.25); }
-  a:hover { border-bottom-color: var(--accent); }
+  a { color: var(--color-primary); text-decoration: none; border-bottom: 1px solid rgba(168,85,247,0.30); }
+  a:hover { color: var(--color-accent); border-bottom-color: var(--color-accent); }
   code, pre, .mono {
     font-family: "Iosevka", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 14px;
@@ -100,14 +109,14 @@
   /* Formal-definition callout (the page's one pinned, quotable block) */
   .definition {
     background: var(--bg-quote);
-    border-left: 3px solid var(--accent);
+    border-left: 3px solid var(--color-primary);
     padding: 20px 24px;
     margin: 28px 0;
     color: var(--ink);
     font-size: 16.5px;
     line-height: 1.55;
   }
-  .definition strong { color: var(--accent); font-weight: 600; }
+  .definition strong { color: var(--color-primary); font-weight: 600; }
 
   /* Two-column code panel (marker / SQL) */
   .panel-row {
@@ -150,10 +159,16 @@
     line-height: 1.6;
   }
   .panel .panel-body p { margin: 0; }
-  .panel pre .c-com { color: var(--code-com); font-style: italic; }
-  .panel pre .c-key { color: var(--code-key); }
-  .panel pre .c-str { color: var(--code-str); }
-  .panel pre .c-fn  { color: var(--code-fn); }
+  .panel pre .c-com    { color: var(--code-com); font-style: italic; }
+  .panel pre .c-key    { color: var(--code-key); }
+  .panel pre .c-sql-kw { color: var(--color-sql-kw); }
+  .panel pre .c-str    { color: var(--code-str); }
+  .panel pre .c-fn     { color: var(--code-fn); }
+  .codeblock pre .c-com    { color: var(--code-com); font-style: italic; }
+  .codeblock pre .c-key    { color: var(--code-key); }
+  .codeblock pre .c-sql-kw { color: var(--color-sql-kw); }
+  .codeblock pre .c-str    { color: var(--code-str); }
+  .codeblock pre .c-fn     { color: var(--code-fn); }
 
   /* Case-study tiles */
   .case-grid {
@@ -172,7 +187,7 @@
   .case .stat {
     font-family: "Iosevka", "JetBrains Mono", ui-monospace, Menlo, monospace;
     font-size: 32px;
-    color: var(--accent);
+    color: var(--color-primary);
     margin: 0 0 6px 0;
     line-height: 1.1;
   }
@@ -401,12 +416,50 @@
   </div>
 </header>
 
+<!-- ─── WHAT SCRY IS (top-of-page quickstart) ────────────────── -->
+<section id="what-scry-is">
+  <div class="wrap">
+    <h2>What scry is</h2>
+    <p class="audience">scry is for developers building and running long-lived AI coding agents &mdash; systems that work across many sessions on the same codebase, accumulating knowledge faster than any single session can hold.</p>
+
+    <p>scry is a marker-indexed knowledge graph for those agents. Every artifact the agent produces &mdash; a design, a decision, a lesson learned &mdash; carries a short structured note (a <em>marker</em>) written into the file itself. A background indexer turns every marker into a row in a small local SQLite cache. The problem this solves: an agent&rsquo;s persisted knowledge grows unbounded across sessions, while any single session can only hold a finite slice in context. Without scry, a later session reads through code and reconstructs answers it cannot find; with scry, it asks a direct question in SQL and gets a direct answer.</p>
+
+    <div class="panel-row">
+      <div class="panel">
+        <div class="panel-head">A marker — written into the file itself</div>
+<pre><span class="c-com">&lt;!-- @scry.entry</span>
+<span class="c-key">id:</span> <span class="c-str">design.auth-flow~9eb0fd7e</span>
+<span class="c-key">kind:</span> <span class="c-str">design</span>
+<span class="c-key">summary:</span> &gt;
+  JWT auth middleware. Also:
+  bearer-token, refresh-flow.
+<span class="c-key">tags:</span> [<span class="c-str">"topic:auth"</span>, <span class="c-str">"auth"</span>]
+<span class="c-key">seeded_questions:</span>
+  - <span class="c-str">"What is the JWT refresh flow?"</span>
+<span class="c-com">@scry.entry.end --&gt;</span></pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head">A later session asks. The index answers.</div>
+<pre><span class="c-sql-kw">SELECT</span> id, summary
+<span class="c-sql-kw">FROM</span>   scry__doc
+<span class="c-sql-kw">WHERE</span>  kind = <span class="c-str">'design'</span>
+  <span class="c-sql-kw">AND</span>  <span class="c-str">'topic:auth'</span> <span class="c-sql-kw">IN</span> (
+    <span class="c-sql-kw">SELECT</span> tag
+    <span class="c-sql-kw">FROM</span>   scry__doc_tag
+    <span class="c-sql-kw">WHERE</span>  doc_id = scry__doc.id
+  );</pre>
+      </div>
+    </div>
+
+    <p style="color:var(--ink-muted); font-size: 14.5px; margin: -8px 0 10px 0; font-family: ui-sans-serif, system-ui, sans-serif;">Install &mdash; scry runs as an MCP server.</p>
+    <div class="codeblock"><pre>uv tool install scry-mcp</pre></div>
+  </div>
+</section>
+
 <!-- ─── PROBLEM ──────────────────────────────────────────────── -->
 <section id="problem">
   <div class="narrow">
     <h2>The problem</h2>
-    <p class="audience">scry is for developers building and running long-lived AI coding agents &mdash; systems that work across many sessions on the same codebase, accumulating knowledge faster than any single session can hold.</p>
-
     <p>The preeminent problem in agentic coding and more broader agentic space in general is what is becoming known as the &ldquo;agent context problem.&rdquo;</p>
 
     <div class="definition">
@@ -488,22 +541,22 @@
       </div>
       <div class="panel">
         <div class="panel-head">scry_sql — from another session</div>
-<pre><span class="c-key">SELECT</span> id, summary
-<span class="c-key">FROM</span>   scry__doc
-<span class="c-key">WHERE</span>  kind = <span class="c-str">'design'</span>
-  <span class="c-key">AND</span>  id <span class="c-key">IN</span> (
-    <span class="c-key">SELECT</span> doc_id
-    <span class="c-key">FROM</span>   scry__doc_tag
-    <span class="c-key">WHERE</span>  tag = <span class="c-str">'topic:auth'</span>
+<pre><span class="c-sql-kw">SELECT</span> id, summary
+<span class="c-sql-kw">FROM</span>   scry__doc
+<span class="c-sql-kw">WHERE</span>  kind = <span class="c-str">'design'</span>
+  <span class="c-sql-kw">AND</span>  id <span class="c-sql-kw">IN</span> (
+    <span class="c-sql-kw">SELECT</span> doc_id
+    <span class="c-sql-kw">FROM</span>   scry__doc_tag
+    <span class="c-sql-kw">WHERE</span>  tag = <span class="c-str">'topic:auth'</span>
   )
-<span class="c-key">ORDER BY</span> weight <span class="c-key">DESC</span>;
+<span class="c-sql-kw">ORDER BY</span> weight <span class="c-sql-kw">DESC</span>;
 
 <span class="c-com">-- or, full-text:</span>
-<span class="c-key">SELECT</span> id, summary
-<span class="c-key">FROM</span>   scry__doc_fts
-<span class="c-key">WHERE</span>  scry__doc_fts <span class="c-key">MATCH</span>
+<span class="c-sql-kw">SELECT</span> id, summary
+<span class="c-sql-kw">FROM</span>   scry__doc_fts
+<span class="c-sql-kw">WHERE</span>  scry__doc_fts <span class="c-sql-kw">MATCH</span>
        <span class="c-str">'JWT refresh flow'</span>
-<span class="c-key">ORDER BY</span> rank;</pre>
+<span class="c-sql-kw">ORDER BY</span> rank;</pre>
       </div>
     </div>
 
@@ -617,12 +670,12 @@ seeded_questions:
 <span class="c-com">@scry.entry.end --&gt;</span>
 
 <span class="c-com"># In a future session, scry_sql:</span>
-<span class="c-key">SELECT</span> d.id, d.summary
-<span class="c-key">FROM</span>   scry__doc d
-<span class="c-key">JOIN</span>   scry__doc_tag t <span class="c-key">ON</span> t.doc_id = d.id
-<span class="c-key">WHERE</span>  t.tag = <span class="c-str">'topic:auth'</span>
-  <span class="c-key">AND</span>  d.status = <span class="c-str">'active'</span>
-<span class="c-key">ORDER BY</span> d.weight <span class="c-key">DESC</span>;</pre>
+<span class="c-sql-kw">SELECT</span> d.id, d.summary
+<span class="c-sql-kw">FROM</span>   scry__doc d
+<span class="c-sql-kw">JOIN</span>   scry__doc_tag t <span class="c-sql-kw">ON</span> t.doc_id = d.id
+<span class="c-sql-kw">WHERE</span>  t.tag = <span class="c-str">'topic:auth'</span>
+  <span class="c-sql-kw">AND</span>  d.status = <span class="c-str">'active'</span>
+<span class="c-sql-kw">ORDER BY</span> d.weight <span class="c-sql-kw">DESC</span>;</pre>
     </div>
 
     <p>One row comes back, every time. No vector store. No re-rank. No LLM in the query path. The marker fields decided what would be found before any future agent went looking; the SQL is just the lookup that honors that decision.</p>
@@ -681,7 +734,7 @@ scry init</pre></div>
       <li><a href="https://pypi.org/project/scry-mcp/">PyPI: scry-mcp</a></li>
       <li><a href="mailto:inbox@theterminal.chat">Contact</a></li>
     </ul>
-    <p style="margin: 8px 0 0 0;">scry is developed and operated by reflection. The disk is the database. The SQL is the cache.</p>
+    <p style="margin: 8px 0 0 0;">scry is developed and operated by reflection.</p>
   </div>
 </footer>
 
