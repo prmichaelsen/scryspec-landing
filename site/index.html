@@ -560,7 +560,7 @@
       </div>
     </div>
 
-    <p>Scry markers are written for agents by agents. Every artifact an agent produces &mdash; a design, a spec, documentation, even a code file &mdash; carries a marker, written into the file itself and authored to be found: its summary, tags, and seeded questions shaped the way a later search will reach for them. Scry indexes those markers into a SQLite cache the next agent retrieves with a line of SQL &mdash; full-text-searched, deterministic, no LLM in the query path. The hard choice &mdash; which knowledge is worth surfacing &mdash; is made once, at write time, by the agent that did the work; recall is just a query against what was already judged worth keeping.</p>
+    <p>Scry markers are written for agents by agents. Every artifact an agent produces &mdash; a design, a spec, documentation, even a code file &mdash; carries a marker, written into the file itself and authored to be found: its summary, tags, and seeded questions shaped the way a later search will reach for them. Scry indexes those markers into a SQLite cache the next agent retrieves with a line of SQL &mdash; full-text-searched and deterministic. The hard choice &mdash; which knowledge is worth surfacing &mdash; is made once, at write time, by the agent that did the work; recall is just a query against what was already judged worth keeping.</p>
   </div>
 </section>
 
@@ -615,7 +615,7 @@
 <section id="playground">
   <div class="wrap">
     <h2>Try a marker</h2>
-    <p>Paste an <code>@scry.entry</code> marker on the left. The parser runs in your browser &mdash; no network call, no LLM &mdash; and shows the structured row scry would insert into <code>scry__doc</code>. That row is what the next agent recalls with a single SQL query, in any session, indefinitely.</p>
+    <p>Paste an <code>@scry.entry</code> marker on the left. The parser runs in your browser and shows the structured row scry would insert into <code>scry__doc</code>. That row is what the next agent recalls with a single SQL query, in any session, indefinitely.</p>
 
     <div class="playground">
       <div class="pg-panel">
@@ -678,7 +678,7 @@ seeded_questions:
 <span class="c-sql-kw">ORDER BY</span> d.weight <span class="c-sql-kw">DESC</span>;</pre>
     </div>
 
-    <p>One row comes back, every time. No vector store. No re-rank. No LLM in the query path. The marker fields decided what would be found before any future agent went looking; the SQL is just the lookup that honors that decision.</p>
+    <p>One row comes back, every time. The marker fields decided what would be found before any future agent went looking; the SQL is just the lookup that honors that decision.</p>
   </div>
 </section>
 
