@@ -678,7 +678,7 @@ seeded_questions:
 <span class="c-sql-kw">ORDER BY</span> d.weight <span class="c-sql-kw">DESC</span>;</pre>
     </div>
 
-    <p>One row comes back, every time. The marker fields decided what would be found before any future agent went looking; the SQL is just the lookup that honors that decision.</p>
+    <p>The query returns whatever the marker index holds — zero rows, one, or many — keyed by the fields the author chose to expose. A marker that was never written when the artifact was produced leaves the artifact invisible to scry. The discipline lives at write time, not query time.</p>
   </div>
 </section>
 
