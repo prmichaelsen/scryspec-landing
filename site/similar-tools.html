@@ -72,23 +72,23 @@
     gap: clamp(10px, 1.6vw, 14px);
   }
   nav.topnav .navlinks a {
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
-    font-size: clamp(13px, 1.6vw, 15px);
-    letter-spacing: 0.06em;
+    font-family: ui-serif, "Iowan Old Style", "Apple Garamond", "Palatino Linotype", "Times New Roman", Georgia, serif;
+    font-size: clamp(14px, 1.7vw, 17px);
     color: var(--ink-muted);
-    border-bottom: 1px solid transparent;
     padding-bottom: 2px;
     white-space: nowrap;
-    font-weight: 500;
+    font-weight: 400;
+    border-bottom: none;
   }
   nav.topnav .navlinks a:hover { color: var(--color-primary); }
   nav.topnav .navlinks a[aria-current="page"] {
-    border-bottom-color: var(--ink-muted);
+    color: var(--color-primary);
+    font-weight: 700;
   }
   nav.topnav .navlinks .navsep {
     color: var(--ink-dim);
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: clamp(13px, 1.6vw, 15px);
+    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
+    font-size: clamp(14px, 1.7vw, 17px);
     user-select: none;
   }
   @media (max-width: 480px) {
@@ -255,7 +255,7 @@
 <nav class="topnav">
   <div class="wrap">
     <div class="navlinks">
-      <a href="/">SCRY</a>
+      <a href="/">Scry</a>
       <span class="navsep" aria-hidden="true">|</span>
       <a href="/similar-tools" aria-current="page">Similar Tools</a>
     </div>
@@ -299,7 +299,7 @@
     <p>Retrieval-Augmented Generation: chunk the corpus, embed each chunk with a model (OpenAI <code>text-embedding-3</code>, Voyage, BGE, etc.), store vectors in an index, and at query time embed the query and return the nearest-neighbour chunks as additional context to the LLM.</p>
 
     <h3>Named systems</h3>
-    <p>FAISS (Meta, library), pgvector (Postgres extension), Pinecone, Weaviate, Chroma, Qdrant, Milvus, LanceDB, ElasticSearch&rsquo;s <code>dense_vector</code>, OpenAI Assistants File Search, LlamaIndex and LangChain retriever abstractions sitting atop any of the above.</p>
+    <p><a href="https://github.com/facebookresearch/faiss" target="_blank" rel="noopener">FAISS</a> (Meta, library), <a href="https://github.com/pgvector/pgvector" target="_blank" rel="noopener">pgvector</a> (Postgres extension), <a href="https://www.pinecone.io" target="_blank" rel="noopener">Pinecone</a>, <a href="https://weaviate.io" target="_blank" rel="noopener">Weaviate</a>, <a href="https://www.trychroma.com" target="_blank" rel="noopener">Chroma</a>, <a href="https://qdrant.tech" target="_blank" rel="noopener">Qdrant</a>, <a href="https://milvus.io" target="_blank" rel="noopener">Milvus</a>, <a href="https://lancedb.com" target="_blank" rel="noopener">LanceDB</a>, <a href="https://www.elastic.co/elasticsearch" target="_blank" rel="noopener">ElasticSearch</a>&rsquo;s <code>dense_vector</code>, <a href="https://platform.openai.com/docs/assistants/tools/file-search" target="_blank" rel="noopener">OpenAI Assistants File Search</a>, <a href="https://www.llamaindex.ai" target="_blank" rel="noopener">LlamaIndex</a> and <a href="https://www.langchain.com" target="_blank" rel="noopener">LangChain</a> retriever abstractions sitting atop any of the above.</p>
 
     <h3>How it approaches the problem</h3>
     <p>Similarity in embedding space is treated as a proxy for relevance. The corpus is not curated; the index is the curator, by way of the embedding model&rsquo;s learned geometry.</p>
@@ -330,13 +330,13 @@
 
     <h3>Named systems</h3>
     <ul class="plain">
-      <li><strong>ctags / Universal Ctags.</strong> Text-file index of symbol &rarr; file:line. Decades old; still the floor.</li>
-      <li><strong>LSP &mdash; Language Server Protocol.</strong> Per-language servers (rust-analyzer, gopls, pyright, typescript-language-server) expose <code>workspaceSymbol</code>, <code>definition</code>, <code>references</code>, <code>hover</code>.</li>
-      <li><strong>Sourcegraph.</strong> Code search across many repos with structural queries, code navigation, and an LSIF/SCIP-based cross-repo index.</li>
-      <li><strong>Glean</strong> (Meta, open source). Schema-driven code knowledge base; used internally at Meta for cross-language code Q&amp;A.</li>
-      <li><strong>OpenGrok / Hound / livegrep.</strong> Repository-scale grep-with-an-index for fast text search.</li>
-      <li><strong>tree-sitter.</strong> Incremental parser producing concrete syntax trees; the substrate beneath much modern code-intel.</li>
-      <li><strong>Stack Graphs</strong> (GitHub). Scope-graph-based name resolution designed for cross-repo navigation.</li>
+      <li><strong><a href="https://ctags.io" target="_blank" rel="noopener">ctags / Universal Ctags</a>.</strong> Text-file index of symbol &rarr; file:line. Decades old; still the floor.</li>
+      <li><strong><a href="https://microsoft.github.io/language-server-protocol/" target="_blank" rel="noopener">LSP &mdash; Language Server Protocol</a>.</strong> Per-language servers (rust-analyzer, gopls, pyright, typescript-language-server) expose <code>workspaceSymbol</code>, <code>definition</code>, <code>references</code>, <code>hover</code>.</li>
+      <li><strong><a href="https://sourcegraph.com" target="_blank" rel="noopener">Sourcegraph</a>.</strong> Code search across many repos with structural queries, code navigation, and an <a href="https://github.com/sourcegraph/scip" target="_blank" rel="noopener">LSIF/SCIP</a>-based cross-repo index.</li>
+      <li><strong><a href="https://github.com/facebookincubator/Glean" target="_blank" rel="noopener">Glean</a></strong> (Meta, open source). Schema-driven code knowledge base; used internally at Meta for cross-language code Q&amp;A.</li>
+      <li><strong><a href="https://oracle.github.io/opengrok/" target="_blank" rel="noopener">OpenGrok</a> / <a href="https://github.com/etsy/hound" target="_blank" rel="noopener">Hound</a> / <a href="https://livegrep.com" target="_blank" rel="noopener">livegrep</a>.</strong> Repository-scale grep-with-an-index for fast text search.</li>
+      <li><strong><a href="https://tree-sitter.github.io/tree-sitter/" target="_blank" rel="noopener">tree-sitter</a>.</strong> Incremental parser producing concrete syntax trees; the substrate beneath modern code-intel.</li>
+      <li><strong><a href="https://github.com/github/stack-graphs" target="_blank" rel="noopener">Stack Graphs</a></strong> (GitHub). Scope-graph-based name resolution designed for cross-repo navigation.</li>
     </ul>
 
     <h3>How it approaches the problem</h3>
@@ -367,11 +367,11 @@
 
     <h3>Named systems</h3>
     <ul class="plain">
-      <li><strong>Neo4j / TigerGraph / ArangoDB.</strong> General-purpose graph DBs.</li>
-      <li><strong>Microsoft GraphRAG.</strong> LLM-extracted entity-and-relationship graph layered atop RAG, with community-summarization for global queries; explicitly addresses the &ldquo;RAG cannot answer global questions&rdquo; failure mode.</li>
-      <li><strong>Cognee.</strong> Open-source memory engine that builds a knowledge graph and a vector index from ingested text.</li>
-      <li><strong>Code Property Graphs (CPG).</strong> From Yamaguchi et al. and productized as Joern / ShiftLeft; unify AST + CFG + DDG in one graph for code analysis.</li>
-      <li><strong>Semantic-web stack (RDF / SPARQL / OWL).</strong> The original knowledge-graph substrate. Heavyweight; rarely the right shape for an agent index but worth naming for completeness.</li>
+      <li><strong><a href="https://neo4j.com" target="_blank" rel="noopener">Neo4j</a> / <a href="https://www.tigergraph.com" target="_blank" rel="noopener">TigerGraph</a> / <a href="https://arangodb.com" target="_blank" rel="noopener">ArangoDB</a>.</strong> General-purpose graph DBs.</li>
+      <li><strong><a href="https://github.com/microsoft/graphrag" target="_blank" rel="noopener">Microsoft GraphRAG</a>.</strong> LLM-extracted entity-and-relationship graph layered atop RAG, with community-summarization for global queries; explicitly addresses the &ldquo;RAG cannot answer global questions&rdquo; failure mode.</li>
+      <li><strong><a href="https://www.cognee.ai" target="_blank" rel="noopener">Cognee</a>.</strong> Open-source memory engine that builds a knowledge graph and a vector index from ingested text.</li>
+      <li><strong>Code Property Graphs (CPG).</strong> From Yamaguchi et al. and productized as <a href="https://joern.io" target="_blank" rel="noopener">Joern</a> / <a href="https://www.shiftleft.io" target="_blank" rel="noopener">ShiftLeft</a>; unify AST + CFG + DDG in one graph for code analysis.</li>
+      <li><strong>Semantic-web stack (<a href="https://www.w3.org/RDF/" target="_blank" rel="noopener">RDF</a> / <a href="https://www.w3.org/TR/sparql11-query/" target="_blank" rel="noopener">SPARQL</a> / <a href="https://www.w3.org/OWL/" target="_blank" rel="noopener">OWL</a>).</strong> The original knowledge-graph substrate. Heavyweight; rarely the right shape for an agent index but worth naming for completeness.</li>
     </ul>
 
     <h3>How it approaches the problem</h3>
@@ -402,13 +402,13 @@
 
     <h3>Named systems</h3>
     <ul class="plain">
-      <li><strong>MemGPT &rarr; Letta.</strong> Originally MemGPT (Berkeley, 2023); now Letta. Models a memory hierarchy (core / archival / recall) and exposes tools the agent calls to read and write each tier. &ldquo;Memory blocks&rdquo; are first-class typed objects; the agent edits its own block contents as it learns.</li>
-      <li><strong>mem0.</strong> Open-source memory layer. Extracts facts from conversation turns, classifies them, stores in a vector+graph hybrid, retrieves by relevance plus recency. Used by Cursor, Lindy, and others for cross-session user memory.</li>
-      <li><strong>Zep.</strong> Commercial agent memory service. Builds a temporal knowledge graph from conversation history; supports point-in-time queries (&ldquo;what did the user believe two weeks ago&rdquo;). Strong on user-fact memory for chat agents.</li>
-      <li><strong>LangGraph / LangChain memory.</strong> Framework-provided memory abstractions: <code>ConversationBufferMemory</code>, <code>ConversationSummaryMemory</code>, persisted via Redis / SQLite / Postgres. Lighter-weight than Letta; bring-your-own discipline.</li>
-      <li><strong>CrewAI / AutoGen memory.</strong> Multi-agent frameworks with per-agent and shared memory primitives; mostly thin wrappers around the above.</li>
+      <li><strong><a href="https://github.com/letta-ai/letta" target="_blank" rel="noopener">MemGPT</a> &rarr; <a href="https://www.letta.com" target="_blank" rel="noopener">Letta</a>.</strong> Originally MemGPT (Berkeley, 2023); now Letta. Models a memory hierarchy (core / archival / recall) and exposes tools the agent calls to read and write each tier. &ldquo;Memory blocks&rdquo; are first-class typed objects; the agent edits its own block contents as it learns.</li>
+      <li><strong><a href="https://mem0.ai" target="_blank" rel="noopener">mem0</a>.</strong> Open-source memory layer. Extracts facts from conversation turns, classifies them, stores in a vector+graph hybrid, retrieves by relevance plus recency. Used by <a href="https://www.cursor.com" target="_blank" rel="noopener">Cursor</a>, Lindy, and others for cross-session user memory.</li>
+      <li><strong><a href="https://www.getzep.com" target="_blank" rel="noopener">Zep</a>.</strong> Commercial agent memory service. Builds a temporal knowledge graph from conversation history; supports point-in-time queries (&ldquo;what did the user believe two weeks ago&rdquo;). Strong on user-fact memory for chat agents.</li>
+      <li><strong><a href="https://www.langchain.com/langgraph" target="_blank" rel="noopener">LangGraph</a> / LangChain memory.</strong> Framework-provided memory abstractions: <code>ConversationBufferMemory</code>, <code>ConversationSummaryMemory</code>, persisted via Redis / SQLite / Postgres. Lighter-weight than Letta; bring-your-own discipline.</li>
+      <li><strong><a href="https://www.crewai.com" target="_blank" rel="noopener">CrewAI</a> / <a href="https://microsoft.github.io/autogen/" target="_blank" rel="noopener">AutoGen</a> memory.</strong> Multi-agent frameworks with per-agent and shared memory primitives; mostly thin wrappers around the above.</li>
       <li><strong>Cognee (memory mode).</strong> Same project as the graph entry above; explicitly positioned as agent memory.</li>
-      <li><strong>OpenAI Assistants Memory and ChatGPT memory.</strong> Closed, managed; the consumer-grade reference point.</li>
+      <li><strong><a href="https://platform.openai.com/docs/assistants/overview" target="_blank" rel="noopener">OpenAI Assistants Memory</a> and <a href="https://openai.com/index/memory-and-new-controls-for-chatgpt/" target="_blank" rel="noopener">ChatGPT memory</a>.</strong> Closed, managed; the consumer-grade reference point.</li>
     </ul>
 
     <h3>How they approach the problem</h3>
@@ -440,10 +440,10 @@
 
     <h3>Named systems</h3>
     <ul class="plain">
-      <li><strong>Gemini 1.5 / 2.0 / 2.5.</strong> 1M &ndash; 2M token windows; Google&rsquo;s long-context flagship.</li>
-      <li><strong>Claude 3.7 / 4 family.</strong> 200k standard, 1M tier on enterprise for Sonnet/Opus.</li>
-      <li><strong>GPT-4.1 / o1 / o3.</strong> 128k &ndash; 1M depending on tier.</li>
-      <li><strong>Architectural advances feeding this.</strong> FlashAttention, Ring Attention, sliding-window attention, attention sinks (StreamingLLM), state-space models (Mamba), grouped-query attention.</li>
+      <li><strong><a href="https://deepmind.google/technologies/gemini/" target="_blank" rel="noopener">Gemini 1.5 / 2.0 / 2.5</a>.</strong> 1M &ndash; 2M token windows; Google&rsquo;s long-context flagship.</li>
+      <li><strong><a href="https://www.anthropic.com/claude" target="_blank" rel="noopener">Claude 3.7 / 4 family</a>.</strong> 200k standard, 1M tier on enterprise for Sonnet/Opus.</li>
+      <li><strong><a href="https://openai.com/index/gpt-4-1/" target="_blank" rel="noopener">GPT-4.1</a> / <a href="https://openai.com/o1/" target="_blank" rel="noopener">o1</a> / <a href="https://openai.com/index/introducing-o3-and-o4-mini/" target="_blank" rel="noopener">o3</a>.</strong> 128k &ndash; 1M depending on tier.</li>
+      <li><strong>Architectural advances feeding this.</strong> <a href="https://github.com/Dao-AILab/flash-attention" target="_blank" rel="noopener">FlashAttention</a>, <a href="https://github.com/lhao499/RingAttention" target="_blank" rel="noopener">Ring Attention</a>, sliding-window attention, attention sinks (<a href="https://github.com/mit-han-lab/streaming-llm" target="_blank" rel="noopener">StreamingLLM</a>), state-space models (<a href="https://github.com/state-spaces/mamba" target="_blank" rel="noopener">Mamba</a>), grouped-query attention.</li>
     </ul>
 
     <h3>How it approaches the problem</h3>
@@ -472,12 +472,12 @@
 
     <h3>Named systems</h3>
     <ul class="plain">
-      <li><strong>CLAUDE.md</strong> (Anthropic Claude Code convention).</li>
-      <li><strong>AGENTS.md</strong> (emerging cross-tool convention; Cursor, Cline, others).</li>
-      <li><strong>.cursorrules / Cursor rules files.</strong></li>
-      <li><strong>Cline rules / .clinerules.</strong></li>
-      <li><strong>GitHub Copilot custom instructions.</strong></li>
-      <li><strong>Aider&rsquo;s <code>CONVENTIONS.md</code>.</strong></li>
+      <li><strong><a href="https://docs.claude.com/en/docs/claude-code/memory" target="_blank" rel="noopener">CLAUDE.md</a></strong> (Anthropic Claude Code convention).</li>
+      <li><strong><a href="https://agents.md" target="_blank" rel="noopener">AGENTS.md</a></strong> (emerging cross-tool convention; Cursor, <a href="https://github.com/cline/cline" target="_blank" rel="noopener">Cline</a>, others).</li>
+      <li><strong><a href="https://docs.cursor.com/context/rules" target="_blank" rel="noopener">.cursorrules / Cursor rules files</a>.</strong></li>
+      <li><strong><a href="https://docs.cline.bot/features/cline-rules" target="_blank" rel="noopener">Cline rules / .clinerules</a>.</strong></li>
+      <li><strong><a href="https://github.com/features/copilot" target="_blank" rel="noopener">GitHub Copilot</a> custom instructions.</strong></li>
+      <li><strong><a href="https://aider.chat" target="_blank" rel="noopener">Aider</a>&rsquo;s <code>CONVENTIONS.md</code>.</strong></li>
       <li>Any project&rsquo;s <strong>README, ARCHITECTURE.md, DESIGN.md</strong> read by the agent on demand.</li>
     </ul>
 
@@ -506,7 +506,7 @@
     <p>Search the source tree by literal or regex pattern. Fast; ubiquitous; the floor every agent already has.</p>
 
     <h3>Named systems</h3>
-    <p>GNU grep, ripgrep (rg), ag (the silver searcher), ack, OpenGrok, livegrep, Sourcegraph&rsquo;s text search, SQLite FTS5, ElasticSearch BM25.</p>
+    <p><a href="https://www.gnu.org/software/grep/" target="_blank" rel="noopener">GNU grep</a>, <a href="https://github.com/BurntSushi/ripgrep" target="_blank" rel="noopener">ripgrep</a> (rg), <a href="https://geoff.greer.fm/ag/" target="_blank" rel="noopener">ag</a> (the silver searcher), <a href="https://beyondgrep.com" target="_blank" rel="noopener">ack</a>, OpenGrok, livegrep, Sourcegraph&rsquo;s text search, <a href="https://www.sqlite.org/fts5.html" target="_blank" rel="noopener">SQLite FTS5</a>, ElasticSearch BM25.</p>
 
     <h3>How it approaches the problem</h3>
     <p>No curation; the corpus <em>is</em> the index. Find by token, not by meaning.</p>
@@ -525,10 +525,10 @@
   <div class="narrow">
     <h2><span class="num">08</span>Honourable mentions</h2>
     <ul class="plain">
-      <li><strong>Notion / Confluence / Linear / Jira.</strong> External knowledge bases. Real, useful, and entirely outside the source tree. Same drift cost as KG sidecars.</li>
-      <li><strong>Codex / Greptile / Sweep / Cody.</strong> Coding agents with their own internal retrieval; closer to product than to category. They sit <em>above</em> this stack and could compose with scry.</li>
-      <li><strong>Embedchain / Haystack / DSPy retrievers.</strong> Framework-level RAG building blocks; subordinate to the RAG entry.</li>
-      <li><strong>Obsidian / Roam / Logseq.</strong> Human knowledge management with bidirectional links. The closest <em>human-side</em> analogue to the marker graph; not designed for agent consumption but worth naming for shape.</li>
+      <li><strong><a href="https://www.notion.so" target="_blank" rel="noopener">Notion</a> / <a href="https://www.atlassian.com/software/confluence" target="_blank" rel="noopener">Confluence</a> / <a href="https://linear.app" target="_blank" rel="noopener">Linear</a> / <a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">Jira</a>.</strong> External knowledge bases. Real, useful, and entirely outside the source tree. Same drift cost as KG sidecars.</li>
+      <li><strong><a href="https://openai.com/index/openai-codex/" target="_blank" rel="noopener">Codex</a> / <a href="https://www.greptile.com" target="_blank" rel="noopener">Greptile</a> / <a href="https://sweep.dev" target="_blank" rel="noopener">Sweep</a> / <a href="https://sourcegraph.com/cody" target="_blank" rel="noopener">Cody</a>.</strong> Coding agents with their own internal retrieval; closer to product than to category. They sit <em>above</em> this stack and could compose with scry.</li>
+      <li><strong><a href="https://embedchain.ai" target="_blank" rel="noopener">Embedchain</a> / <a href="https://haystack.deepset.ai" target="_blank" rel="noopener">Haystack</a> / <a href="https://dspy.ai" target="_blank" rel="noopener">DSPy</a> retrievers.</strong> Framework-level RAG building blocks; subordinate to the RAG entry.</li>
+      <li><strong><a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a> / <a href="https://roamresearch.com" target="_blank" rel="noopener">Roam</a> / <a href="https://logseq.com" target="_blank" rel="noopener">Logseq</a>.</strong> Human knowledge management with bidirectional links. The closest <em>human-side</em> analogue to the marker graph; not designed for agent consumption but worth naming for shape.</li>
     </ul>
   </div>
 </section>
