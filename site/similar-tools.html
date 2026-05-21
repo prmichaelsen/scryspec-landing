@@ -148,30 +148,36 @@
   }
   section h2 + .verdict { margin: 2px 0 22px 0; }
 
-  /* Classification tag */
+  /* Classification pill */
   .tag {
     display: inline-block;
     font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 3px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 999px;
     border: 1px solid var(--rule);
     vertical-align: middle;
-    margin-right: 10px;
+    line-height: 1.2;
   }
-  .tag.peer         { color: var(--color-primary); border-color: rgba(168,85,247,0.45); }
-  .tag.partial-peer { color: var(--color-primary); border-color: rgba(168,85,247,0.25); opacity: 0.92; }
-  .tag.adjacent     { color: var(--color-accent);  border-color: rgba(34,211,238,0.40); }
-  .tag.subordinate  { color: var(--color-sql-kw);  border-color: rgba(236,72,153,0.40); }
-  .verdict {
+  .tag.peer         { color: #f3e8ff; background: rgba(168,85,247,0.22); border-color: rgba(168,85,247,0.65); }
+  .tag.partial-peer { color: #f3e8ff; background: rgba(168,85,247,0.12); border-color: rgba(168,85,247,0.45); }
+  .tag.adjacent     { color: #cffafe; background: rgba(34,211,238,0.14);  border-color: rgba(34,211,238,0.55); }
+  .tag.subordinate  { color: #fce7f3; background: rgba(236,72,153,0.16);  border-color: rgba(236,72,153,0.55); }
+
+  .verdict { margin: 2px 0 22px 0; }
+  .verdict .tag { margin-bottom: 14px; }
+  .verdict .justification {
     color: var(--ink-muted);
     font-size: 14.5px;
     font-family: ui-sans-serif, system-ui, sans-serif;
     line-height: 1.55;
+    margin: 0;
   }
   .verdict .vlabel {
+    display: inline-block;
     color: var(--ink-dim);
     font-size: 11px;
     letter-spacing: 0.14em;
@@ -187,13 +193,32 @@
     background: var(--bg-panel);
     border: 1px solid var(--rule);
     border-radius: 6px;
-    padding: 16px 20px;
+    padding: 18px 22px;
     margin: 24px 0 8px 0;
   }
   .key h3 { margin-top: 0; }
-  .key ul { margin: 0; padding-left: 18px; }
-  .key li { margin: 6px 0; color: var(--ink-muted); }
-  .key li strong { color: var(--ink); font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .key ul.legend-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .key ul.legend-list li {
+    margin: 14px 0;
+    color: var(--ink-muted);
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .key ul.legend-list li:first-child { margin-top: 0; }
+  .key ul.legend-list li:last-child  { margin-bottom: 0; }
+  .key ul.legend-list .tag { justify-self: start; }
+  @media (max-width: 520px) {
+    .key ul.legend-list li {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
 
   .calibration {
     background: var(--bg-elev);
@@ -242,7 +267,7 @@
     <h1>Similar Tools</h1>
     <div class="abstract">
       <p>Scry is most honestly understood in relation to the other approaches to the agent context problem &mdash; not as the only answer, but as one shape among several. This page is that comparison.</p>
-      <p>Eight categories below, each classified <strong>peer</strong>, <strong>adjacent</strong>, or <strong>subordinate</strong> against scry&rsquo;s marker contract, with named systems and the precise place each one is genuinely strong or genuinely limited. The classification key sits at the top; the calibration section at the bottom names where alternatives are strongest and where the marker contract has the clearest edge.</p>
+      <p>Eight categories below, each classified <strong>peer</strong>, <strong>adjacent</strong>, or <strong>subordinate</strong> against scry&rsquo;s marker contract, with named systems and the precise place each one is genuinely strong or genuinely limited. The classification key sits at the top; a summary at the bottom names where the alternatives are strongest and where the marker contract has the clearest edge.</p>
     </div>
   </div>
 </header>
@@ -251,10 +276,11 @@
   <div class="narrow">
     <h2>Classification key</h2>
     <div class="key">
-      <ul>
-        <li><strong>Peer</strong> &mdash; solves the same problem (curated, durable, queryable knowledge of what already exists in the project) with a different primary mechanism. Someone evaluating tools for this would compare it head-to-head with the marker contract.</li>
-        <li><strong>Adjacent</strong> &mdash; solves a related problem (raw retrieval, code navigation, larger context, ambient memory) that overlaps with agent context but is not the same thing. Often complementary.</li>
-        <li><strong>Subordinate</strong> &mdash; a technique the marker contract can use as an implementation detail rather than compete with. Calling it a competitor confuses categories.</li>
+      <ul class="legend-list">
+        <li><span class="tag peer">Peer</span><span>Solves the same problem (curated, durable, queryable knowledge of what already exists in the project) with a different primary mechanism. Someone evaluating tools for this would compare it head-to-head with the marker contract.</span></li>
+        <li><span class="tag partial-peer">Partial Peer</span><span>Solves a substantially overlapping problem with a different shape &mdash; close enough that the comparison is direct, distinct enough that the categories do not fully collapse.</span></li>
+        <li><span class="tag adjacent">Adjacent</span><span>Solves a related problem (raw retrieval, code navigation, larger context, ambient memory) that overlaps with agent context but is not the same thing. Often complementary.</span></li>
+        <li><span class="tag subordinate">Subordinate</span><span>A technique the marker contract can use as an implementation detail rather than compete with. Calling it a competitor confuses categories.</span></li>
       </ul>
     </div>
     <p style="margin-top: 18px; color: var(--ink-muted);">Scry&rsquo;s answer is a <strong>marker contract</strong>: every artifact carries an in-file YAML marker (id, summary, tags, applies, seeded questions) that an indexer pulls into a queryable cache. The agent queries the cache by structured fields, not by similarity. Authoring is deliberate; the marker is part of the file under version control.</p>
@@ -264,7 +290,10 @@
 <section id="rag">
   <div class="narrow">
     <h2><span class="num">01</span>RAG and vector databases</h2>
-    <p class="verdict"><span class="tag subordinate">Subordinate</span><span class="vlabel">Justification:</span>RAG returns nearest-neighbour chunks by embedding similarity; the marker contract can <em>use</em> embeddings as one ranking signal among structured fields. RAG-as-implementation is fine; RAG-as-substitute confuses retrieval with curation.</p>
+    <div class="verdict">
+      <span class="tag subordinate">Subordinate</span>
+      <p class="justification"><span class="vlabel">Justification:</span>RAG returns nearest-neighbour chunks by embedding similarity; the marker contract can <em>use</em> embeddings as one ranking signal among structured fields. RAG-as-implementation is fine; RAG-as-substitute confuses retrieval with curation.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Retrieval-Augmented Generation: chunk the corpus, embed each chunk with a model (OpenAI <code>text-embedding-3</code>, Voyage, BGE, etc.), store vectors in an index, and at query time embed the query and return the nearest-neighbour chunks as additional context to the LLM.</p>
@@ -284,14 +313,17 @@
     </ul>
 
     <h3>Why subordinate, not peer</h3>
-    <p>A marker contract can use embeddings as one ranking signal among the structured fields. Scry&rsquo;s own <code>scry__file_fts</code> is full-text; a future tier could embed marker summaries and add nearest-neighbour lookup. <em>Calibration: production RAG is more deterministic than reductive critiques imply &mdash; same query against a frozen index returns the same chunks. The honest weakness is opacity of the ranking and silent sensitivity to embedding-model upgrades, not raw determinism.</em></p>
+    <p>Production RAG against a frozen index is deterministic &mdash; the same query returns the same chunks. The honest weakness is not raw non-determinism but the <em>opacity of the ranking</em> and the <em>silent sensitivity to embedding-model upgrades</em>: change the embedding model and the same query returns different chunks without anything in the system saying so. A marker contract can use embeddings as one ranking signal among structured fields. Scry&rsquo;s own <code>scry__file_fts</code> is full-text; a future tier could embed marker summaries and add nearest-neighbour lookup. RAG is a mechanism the marker contract can absorb, not an alternative shape of the same answer.</p>
   </div>
 </section>
 
 <section id="code-intel">
   <div class="narrow">
     <h2><span class="num">02</span>Code intelligence</h2>
-    <p class="verdict"><span class="tag adjacent">Adjacent</span><span class="vlabel">Justification:</span>Code intel names what <em>exists</em> and <em>where</em>; the marker contract names what something <em>is</em> and <em>why</em>. Different layers. They compose.</p>
+    <div class="verdict">
+      <span class="tag adjacent">Adjacent</span>
+      <p class="justification"><span class="vlabel">Justification:</span>Code intel names what <em>exists</em> and <em>where</em>; the marker contract names what something <em>is</em> and <em>why</em>. Different layers. They compose.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Tooling that indexes a codebase by symbol &mdash; what functions exist, where they&rsquo;re defined, where they&rsquo;re called, what types they have &mdash; so an editor or search UI can jump to the right place.</p>
@@ -325,7 +357,10 @@
 <section id="knowledge-graphs">
   <div class="narrow">
     <h2><span class="num">03</span>Knowledge graphs</h2>
-    <p class="verdict"><span class="tag partial-peer">Partial Peer</span><span class="vlabel">Justification:</span>The closest <em>paradigm</em> match to scry. Scry is, viewed sideways, a knowledge graph whose nodes are in-file YAML markers and whose edges are <code>implements</code> / <code>depends_on</code> / <code>supersedes</code> references. The difference is location: scry&rsquo;s graph lives <em>in the source</em>, not in a sidecar store.</p>
+    <div class="verdict">
+      <span class="tag partial-peer">Partial Peer</span>
+      <p class="justification"><span class="vlabel">Justification:</span>The closest <em>paradigm</em> match to scry. Scry is, viewed sideways, a knowledge graph whose nodes are in-file YAML markers and whose edges are <code>implements</code> / <code>depends_on</code> / <code>supersedes</code> references. The difference is location: scry&rsquo;s graph lives <em>in the source</em>, not in a sidecar store.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Represent the corpus as nodes (entities, files, concepts) and typed edges (depends-on, implements, supersedes) in a graph database; query with a graph language.</p>
@@ -357,7 +392,10 @@
 <section id="agent-memory">
   <div class="narrow">
     <h2><span class="num">04</span>Agent-memory frameworks</h2>
-    <p class="verdict"><span class="tag peer">Closest Peers</span><span class="vlabel">Justification:</span>The projects most likely to be named in the same sentence as scry. The line worth drawing precisely: agent-memory frameworks are the right tool for <em>memory of interaction</em>; the marker contract is the right tool for <em>memory of artifact</em>.</p>
+    <div class="verdict">
+      <span class="tag peer">Peer</span>
+      <p class="justification"><span class="vlabel">Justification:</span>The projects most likely to be named in the same sentence as scry. The line worth drawing precisely: agent-memory frameworks are the right tool for <em>memory of interaction</em>; the marker contract is the right tool for <em>memory of artifact</em>.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Libraries and services that give an LLM agent durable, structured memory across sessions &mdash; facts, preferences, prior decisions &mdash; separate from the model&rsquo;s context window.</p>
@@ -392,7 +430,10 @@
 <section id="long-context">
   <div class="narrow">
     <h2><span class="num">05</span>Long-context approaches</h2>
-    <p class="verdict"><span class="tag adjacent">Adjacent</span><span class="vlabel">Justification:</span>Long context is the substrate inside which retrieval and curation operate. Scry decides <em>what to include</em>; the context window decides <em>what fits</em>. They compose.</p>
+    <div class="verdict">
+      <span class="tag adjacent">Adjacent</span>
+      <p class="justification"><span class="vlabel">Justification:</span>Long context is the substrate inside which retrieval and curation operate. Scry decides <em>what to include</em>; the context window decides <em>what fits</em>. They compose.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Skip retrieval; put everything in the prompt. Rely on model context windows large enough to hold the relevant slice of the codebase or document set.</p>
@@ -421,7 +462,10 @@
 <section id="memory-files">
   <div class="narrow">
     <h2><span class="num">06</span>Hand-maintained memory files</h2>
-    <p class="verdict"><span class="tag partial-peer">Partial Peer</span><span class="vlabel">Justification:</span>The marker contract <em>is</em> this pattern pulled apart into one marker per artifact, with a schema. Many CLAUDE.md files are scry markers waiting to be extracted.</p>
+    <div class="verdict">
+      <span class="tag partial-peer">Partial Peer</span>
+      <p class="justification"><span class="vlabel">Justification:</span>The marker contract <em>is</em> this pattern pulled apart into one marker per artifact, with a schema. Many CLAUDE.md files are scry markers waiting to be extracted.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Markdown files at known paths that agents are instructed to read at session start. The simplest possible solution; massively deployed.</p>
@@ -453,7 +497,10 @@
 <section id="grep">
   <div class="narrow">
     <h2><span class="num">07</span>Grep / ripgrep / full-text search</h2>
-    <p class="verdict"><span class="tag adjacent">Adjacent</span><span class="vlabel">Justification:</span>Grep is the universal floor; the marker contract is the curated ceiling. Scry&rsquo;s own <code>scry_grep</code> is body FTS underneath, with marker FTS above. They compose.</p>
+    <div class="verdict">
+      <span class="tag adjacent">Adjacent</span>
+      <p class="justification"><span class="vlabel">Justification:</span>Grep is the universal floor; the marker contract is the curated ceiling. Scry&rsquo;s own <code>scry_grep</code> is body FTS underneath, with marker FTS above. They compose.</p>
+    </div>
 
     <h3>What it is</h3>
     <p>Search the source tree by literal or regex pattern. Fast; ubiquitous; the floor every agent already has.</p>
@@ -486,16 +533,15 @@
   </div>
 </section>
 
-<section id="calibration">
+<section id="summary">
   <div class="narrow">
-    <h2>Calibration</h2>
+    <h2>Where each side wins</h2>
     <div class="calibration">
       <h3>Where the alternatives are genuinely strong</h3>
       <ul>
         <li><strong>Long context</strong> is the single biggest reason a marker contract <em>might not matter for some workloads</em>. If a project fits in 200k tokens and the relevant slice fits in 50k, the curation problem is small.</li>
         <li><strong>Agent-memory frameworks</strong> (Letta, mem0, Zep) are doing excellent work on the <em>interaction-memory</em> problem and are legitimately winning that category. Their drift into artifact-memory is real and worth tracking.</li>
         <li><strong>GraphRAG</strong> is the most serious prior art for structured curation above raw retrieval. Scry&rsquo;s bet against it is the location bet &mdash; in-source vs sidecar &mdash; not a claim that structured curation is novel.</li>
-        <li><strong>Production RAG</strong> is more deterministic than reductive critiques imply. The same query against a frozen index returns the same chunks; the honest weakness is opacity of the ranking, not raw determinism.</li>
       </ul>
       <h3>Where the marker contract has the clearest edge</h3>
       <ul>
