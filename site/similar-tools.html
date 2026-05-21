@@ -418,7 +418,7 @@
     <ul class="plain">
       <li><strong>Memory is about the conversation, not the artifact.</strong> MemGPT, mem0, and Zep are at their best storing &ldquo;the user is on a Mac&rdquo; or &ldquo;we decided last week to use Postgres.&rdquo; They are not where you store &ldquo;this spec FR3 is implemented by this function.&rdquo; That binding lives in the codebase.</li>
       <li><strong>Storage outside the source.</strong> A Zep graph or a Letta block is not in the repo. Cloning the project does not clone the memory. A new contributor reads the code without the memory; an agent on a fresh machine starts blind.</li>
-      <li><strong>LLM-mediated authoring.</strong> mem0 and Zep extract facts via an LLM and accept the noise floor that implies. The marker contract is human (or agent) authored deliberately and reviewed in PRs.</li>
+      <li><strong>Inferred at consolidation vs committed at write.</strong> mem0 and Zep extract facts via an LLM during background consolidation passes; the same conversation can yield a different fact graph run to run. A scry marker is also typically agent-authored, so the LLM noise floor is real &mdash; but it is paid once into a committed in-file artifact, reviewable in the same diff as the code it describes, correctable by ordinary edits, and supersede-able by a later marker. The hallucination surface is materialized once and frozen, not re-inferred on every read.</li>
       <li><strong>Schema drift.</strong> Most agent-memory frameworks evolve schema as the product evolves. Scry markers are versioned with the spec and stable under the same git discipline as the source.</li>
     </ul>
 
