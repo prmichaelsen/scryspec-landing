@@ -148,24 +148,22 @@
   }
   section h2 + .verdict { margin: 2px 0 22px 0; }
 
-  /* Classification pill */
+  /* Classification tag */
   .tag {
     display: inline-block;
     font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 999px;
+    padding: 2px 8px;
+    border-radius: 3px;
     border: 1px solid var(--rule);
     vertical-align: middle;
-    line-height: 1.2;
   }
-  .tag.peer         { color: #f3e8ff; background: rgba(168,85,247,0.22); border-color: rgba(168,85,247,0.65); }
-  .tag.partial-peer { color: #f3e8ff; background: rgba(168,85,247,0.12); border-color: rgba(168,85,247,0.45); }
-  .tag.adjacent     { color: #cffafe; background: rgba(34,211,238,0.14);  border-color: rgba(34,211,238,0.55); }
-  .tag.subordinate  { color: #fce7f3; background: rgba(236,72,153,0.16);  border-color: rgba(236,72,153,0.55); }
+  .tag.peer         { color: var(--color-primary); border-color: rgba(168,85,247,0.45); }
+  .tag.partial-peer { color: var(--color-primary); border-color: rgba(168,85,247,0.25); opacity: 0.92; }
+  .tag.adjacent     { color: var(--color-accent);  border-color: rgba(34,211,238,0.40); }
+  .tag.subordinate  { color: var(--color-sql-kw);  border-color: rgba(236,72,153,0.40); }
 
   .verdict { margin: 2px 0 22px 0; }
   .verdict .tag { margin-bottom: 14px; }
