@@ -380,7 +380,7 @@
     <h3>Limitations relative to the marker contract</h3>
     <ul class="plain">
       <li><strong>Authoring overhead.</strong> A separate graph store needs a separate authoring discipline. Markers live in the file they describe; graph nodes live in the database. Drift between source and graph is a constant maintenance tax.</li>
-      <li><strong>Extraction is lossy.</strong> Graphs built by LLM extraction (GraphRAG, Cognee) inherit the LLM&rsquo;s hallucination surface. Hand-authored edges (scry&rsquo;s <code>implements</code> / <code>depends_on</code>) are precise but expensive.</li>
+      <li><strong>Query-time vs write-time materialization.</strong> GraphRAG and Cognee infer the graph at query time from the corpus, so every read re-invokes the LLM&rsquo;s hallucination surface and edges can drift run to run. Scry&rsquo;s edges (<code>implements</code> / <code>depends_on</code>) are materialized at write time as committed in-file markers. An agent typically authors the marker &mdash; the hallucination surface is real &mdash; but it is paid once, on a reviewable, correctable, supersede-able artifact, and the graph is stable across reads thereafter.</li>
       <li><strong>No artifact-level mark.</strong> A node in Neo4j is not visible from the file. An agent reading the file does not know the node exists unless it queries.</li>
     </ul>
 
