@@ -91,6 +91,20 @@
     font-size: clamp(14px, 1.7vw, 17px);
     user-select: none;
   }
+  nav.topnav .navlinks a.iconlink {
+    display: inline-flex;
+    align-items: center;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: var(--ink-muted);
+    line-height: 0;
+  }
+  nav.topnav .navlinks a.iconlink:hover { color: var(--color-primary); }
+  nav.topnav .navlinks a.iconlink svg {
+    width: clamp(16px, 1.9vw, 19px);
+    height: clamp(16px, 1.9vw, 19px);
+    display: block;
+  }
   @media (max-width: 480px) {
     nav.topnav .wrap { padding-top: 14px; padding-bottom: 14px; }
     nav.topnav .navlinks { gap: 8px; }
@@ -256,6 +270,10 @@
       <a href="/">Scry</a>
       <span class="navsep" aria-hidden="true">|</span>
       <a href="/similar-tools" aria-current="page">Similar Tools</a>
+      <span class="navsep" aria-hidden="true">|</span>
+      <a class="iconlink" href="https://github.com/prmichaelsen/scry" target="_blank" rel="noopener" aria-label="GitHub: scry">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+      </a>
     </div>
   </div>
 </nav>
@@ -281,7 +299,7 @@
         <li><span class="tag subordinate">Subordinate</span><span>A technique the marker contract can use as an implementation detail rather than compete with. Calling it a competitor confuses categories.</span></li>
       </ul>
     </div>
-    <p style="margin-top: 18px; color: var(--ink-muted);">Scry&rsquo;s answer is a <strong>marker contract</strong>: every artifact carries an in-file YAML marker (id, summary, tags, applies, seeded questions) that an indexer pulls into a queryable cache. The agent queries the cache by structured fields, not by similarity. Authoring is deliberate; the marker is part of the file under version control.</p>
+    <p style="margin-top: 18px; color: var(--ink-muted);">Scry&rsquo;s answer is a <strong>marker contract</strong> with three marker types. <code>@scry.entry</code> declares an artifact and carries the curated fields (id, summary, tags, applies, seeded questions) an indexer pulls into a queryable cache. <code>@scry.anchor</code> names a queryable point inside a file for cases where a loose <code>#fragment</code> reference cannot reach the location. <code>@scry.bind</code> is the typed edge &mdash; <code>implements</code>, <code>depends_on</code>, <code>supersedes</code> &mdash; that makes the graph bidirectional. The agent queries the cache by structured fields, not by similarity. Authoring is deliberate; every marker is part of the file under version control.</p>
   </div>
 </section>
 
@@ -480,7 +498,7 @@
     </ul>
 
     <h3>How it approaches the problem</h3>
-    <p>Pre-load fixed context. Curation is manual; format is freeform prose. Newer conventions support selective imports and hierarchical loading &mdash; a real, if hand-curated, selection function.</p>
+    <p>Pre-load fixed context. Curation is manual; format is freeform prose. Newer conventions support selective imports and hierarchical loading. This is a genuinely viable selection function, albeit a manually curated one.</p>
 
     <h3>Limitations relative to the marker contract</h3>
     <ul class="plain">
@@ -537,13 +555,13 @@
     <div class="calibration">
       <h3>Where the alternatives are genuinely strong</h3>
       <ul>
-        <li><strong>Long context</strong> is the single biggest reason a marker contract <em>might not matter for some workloads</em>. If a project fits in 200k tokens and the relevant slice fits in 50k, the curation problem is small.</li>
+        <li><strong>Long context</strong> raises the floor for how much an agent can hold at once, and that is real progress. It does not remove the curation problem. A project that fits in 200k tokens is not a project with a 200k-token working budget &mdash; the conversation itself consumes tokens, every tool call returns tokens, and loading a 25% slice of the project (~50k) before the conversation even begins is routine. Context compaction then discards that slice and the agent must reload. Worse, an agent without a curated index falls back to grepping the tree, crawling directories, and reading entire files to find what it needs &mdash; spending tokens on prose it does not need to win the bytes it does. Scry&rsquo;s advantage holds even with a 1M-token window: each marker carries summary / rationale / applies / weight, and the agent uses those fields to decide which files to read and which to skip &mdash; never reading whole files blind. Long context makes scry cheaper to use, not unnecessary.</li>
         <li><strong>Agent-memory frameworks</strong> (Letta, mem0, Zep) are doing excellent work on the <em>interaction-memory</em> problem and are legitimately winning that category. Their drift into artifact-memory is real and worth tracking.</li>
         <li><strong>GraphRAG</strong> is the most serious prior art for structured curation above raw retrieval. Scry&rsquo;s bet against it is the location bet &mdash; in-source vs sidecar &mdash; not a claim that structured curation is novel.</li>
       </ul>
       <h3>Where the marker contract has the clearest edge</h3>
       <ul>
-        <li><strong>In-source authorship.</strong> No drift between code and metadata because they ship together.</li>
+        <li><strong>In-source authorship.</strong> No drift between code and metadata because they ship together. Because the markers live in the source files, they are version-controlled like the code they annotate &mdash; a marker change shows up in a pull request diff and stays in git history, so it can be reviewed, blamed, and reverted like any other change.</li>
         <li><strong>Per-artifact granularity.</strong> Not &ldquo;one memory file per repo&rdquo; and not &ldquo;one node per extracted entity&rdquo; &mdash; one marker per artifact, written by the artifact&rsquo;s author.</li>
         <li><strong>Composability with the rest of the stack.</strong> Markers are not hostile to RAG, KG, LSP, or long context. They are the curation layer those mechanisms can operate against.</li>
       </ul>
@@ -554,11 +572,11 @@
 <section id="scry-tradeoffs">
   <div class="narrow">
     <h2>Scry&rsquo;s own tradeoffs</h2>
-    <p>Stated honestly, because a comparison page that hides them would not be the page it claims to be:</p>
+    <p>Stated honestly, because a comparison page that hides them would not be the page it claims to be. The marker contract has three marker types &mdash; <code>@scry.entry</code> declares an artifact, <code>@scry.anchor</code> names a queryable point inside a file, and <code>@scry.bind</code> is the typed edge that makes the graph bidirectional &mdash; and each carries its own slice of the cost:</p>
     <ul class="plain">
-      <li><strong>Marker discipline is the cost.</strong> A file without a marker is invisible to the curated index; a marker whose fields no longer match the file&rsquo;s content silently degrades recall. Both failures are caught only by the agent that uses the system.</li>
-      <li><strong>Upfront authoring work.</strong> The marker contract trades authoring effort at write time for cheap, deterministic recall at read time. Worth it when the same knowledge is recalled across many sessions; not worth it for one-off or fast-changing state.</li>
-      <li><strong>Not a replacement for interaction memory.</strong> Scry does not store &ldquo;what the user said last week.&rdquo; That category belongs to Letta, mem0, Zep. A mature agent uses both.</li>
+      <li><strong>Marker discipline is the cost.</strong> An unmarked file is missing from the curated, ranked index, and a marker whose fields no longer match the file silently degrades that ranking; both failures are caught only by the agent that uses the system. The fallback floor remains in place &mdash; <code>scry_grep</code> runs full-text search over every indexed file body (<code>scry__file_fts</code>), so an unmarked file is still findable &mdash; but it competes on raw text alongside every other body match instead of winning the curated tier on summary, tags, and weight. Anchors and binds have their own version of this cost: an anchor minted where a loose reference already works is noise, and a bind pointing at a target that was never minted is a pointer into the void.</li>
+      <li><strong>Upfront authoring work.</strong> The marker contract trades authoring effort at write time for cheap, deterministic recall at read time. Entries are the bulk of the work; anchors are written only when a loose <code>#fragment</code> reference cannot reach the location; binds are written when the implementation-to-spec or lesson-to-design relationship is worth materializing as a typed edge. Worth it when the same knowledge is recalled across many sessions; not worth it for one-off or fast-changing state.</li>
+      <li><strong>Interaction memory is a directory convention, not a built-in.</strong> Scry is not limited to artifact memory. With a directory convention &mdash; <code>agent/internal</code>, <code>agent/lessons</code>, <code>agent/journal</code>, <code>agent/memory</code>, <code>agent/notes</code>, <code>agent/preferences</code>, <code>agent/conversations</code>, or whatever taxonomy fits the project &mdash; marked files in those paths are indexed alongside designs and specs, and the agent queries them the same way. Letta, mem0, and Zep ship a managed interaction-memory product out of the box; scry covers the same ground if the project adopts a convention for it. A mature agent can use both, for different reasons.</li>
       <li><strong>SQL is scry&rsquo;s answer, not the spec&rsquo;s mandate.</strong> A different implementation could index the same marker corpus into embeddings and serve recall by similarity; RAG, in that sense, is a possible implementation of the marker contract rather than a peer alternative to it.</li>
     </ul>
   </div>
@@ -570,9 +588,9 @@
       <li><a href="/">scry &mdash; home</a></li>
       <li><a href="https://github.com/prmichaelsen/scry">GitHub: scry</a></li>
       <li><a href="https://github.com/prmichaelsen/scry-spec">GitHub: scry-spec</a></li>
-      <li><a href="mailto:inbox@theterminal.chat">Contact</a></li>
+      <li><a href="mailto:patrickazusa@gmail.com">Contact</a></li>
     </ul>
-    <p style="margin: 8px 0 0 0;">scry is developed and operated by reflection.</p>
+    <p style="margin: 8px 0 0 0;">Scry is developed by Patrick Michaelsen.</p>
   </div>
 </footer>
 
