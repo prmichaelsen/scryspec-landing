@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Similar Tools — scry</title>
+<meta name="description" content="A calibrated landscape survey of technologies that address the agent context problem, classified peer / adjacent / subordinate against scry's marker contract.">
+<meta property="og:title" content="Similar Tools — scry">
+<meta property="og:description" content="A calibrated landscape survey of technologies that address the agent context problem, classified peer / adjacent / subordinate against scry's marker contract.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://scryspec.com/similar-tools">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230b0b0e'/><text x='16' y='22' text-anchor='middle' font-family='Iosevka,Menlo,monospace' font-size='18' fill='%23e8e6df'>s</text></svg>">
+<!-- @scry.bind page.similar-tools~1 research.agent-context-landscape-survey~a23dbc0b This page renders the landscape survey near-line-for-line in marketing voice. -->
+<style>
+  :root {
+    --bg:         #0b0b0e;
+    --bg-elev:    #14141a;
+    --bg-panel:   #16171d;
+    --bg-quote:   #181924;
+    --ink:        #e8e6df;
+    --ink-muted:  #a9a69a;
+    --ink-dim:    #6f6c63;
+    --rule:       #2a2a32;
+    --rule-soft:  #1d1d24;
+    --color-primary: #a855f7;
+    --color-accent:  #22d3ee;
+    --color-sql-kw:  #ec4899;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-serif, "Iowan Old Style", "Apple Garamond", "Palatino Linotype", "Times New Roman", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap   { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+  .narrow { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  p { margin: 0 0 1em 0; }
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168,85,247,0.30);
+  }
+  a:hover { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+  code, .mono {
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 14px;
+  }
+
+  /* Top nav — must match index.html */
+  nav.topnav {
+    border-bottom: 1px solid var(--rule-soft);
+    background: var(--bg);
+  }
+  nav.topnav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    gap: 16px;
+  }
+  nav.topnav .brand {
+    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    color: var(--color-primary);
+    border-bottom: 0;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+  }
+  nav.topnav .brand:hover { color: var(--color-accent); }
+  nav.topnav .navlinks {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 3vw, 28px);
+  }
+  nav.topnav .navlinks a {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+    font-size: clamp(12px, 1.5vw, 14px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    border-bottom: 0;
+    white-space: nowrap;
+  }
+  nav.topnav .navlinks a:hover,
+  nav.topnav .navlinks a[aria-current="page"] {
+    color: var(--color-primary);
+  }
+  @media (max-width: 480px) {
+    nav.topnav .wrap { padding-top: 14px; padding-bottom: 14px; }
+    nav.topnav .navlinks { gap: 14px; }
+  }
+
+  /* Page header */
+  header.page {
+    padding: 64px 0 36px;
+  }
+  header.page h1 {
+    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(30px, 4.6vw, 44px);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    margin: 0 0 22px 0;
+  }
+  header.page .abstract {
+    font-size: 17.5px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    border-left: 3px solid var(--color-primary);
+    background: var(--bg-quote);
+    padding: 18px 22px;
+    margin: 0;
+  }
+  header.page .abstract p { margin: 0 0 0.85em 0; }
+  header.page .abstract p:last-child { margin-bottom: 0; }
+  header.page .abstract em { color: var(--ink); font-style: italic; }
+
+  /* Section rhythm */
+  section { padding: 56px 0; border-top: 1px solid var(--rule-soft); }
+  section h2 {
+    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 500;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.01em;
+  }
+  section h2 .num {
+    color: var(--ink-dim);
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.7em;
+    margin-right: 0.5em;
+    letter-spacing: 0;
+  }
+  section h3 {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 26px 0 10px 0;
+    font-weight: 600;
+  }
+  section h2 + .verdict { margin: 2px 0 22px 0; }
+
+  /* Classification tag */
+  .tag {
+    display: inline-block;
+    font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+  .tag.peer         { color: var(--color-primary); border-color: rgba(168,85,247,0.45); }
+  .tag.partial-peer { color: var(--color-primary); border-color: rgba(168,85,247,0.25); opacity: 0.92; }
+  .tag.adjacent     { color: var(--color-accent);  border-color: rgba(34,211,238,0.40); }
+  .tag.subordinate  { color: var(--color-sql-kw);  border-color: rgba(236,72,153,0.40); }
+  .verdict {
+    color: var(--ink-muted);
+    font-size: 14.5px;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.55;
+  }
+  .verdict .vlabel {
+    color: var(--ink-dim);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+
+  ul.plain { margin: 0 0 1em 0; padding-left: 22px; }
+  ul.plain li { margin: 6px 0; }
+  ul.plain li strong { color: var(--ink); }
+
+  .key {
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 24px 0 8px 0;
+  }
+  .key h3 { margin-top: 0; }
+  .key ul { margin: 0; padding-left: 18px; }
+  .key li { margin: 6px 0; color: var(--ink-muted); }
+  .key li strong { color: var(--ink); font-family: "Iosevka", "JetBrains Mono", ui-monospace, monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  .calibration {
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin: 18px 0 0 0;
+  }
+  .calibration h3 { margin-top: 0; }
+  .calibration ul { padding-left: 20px; margin: 0 0 18px 0; }
+  .calibration ul:last-child { margin-bottom: 0; }
+  .calibration li { margin: 8px 0; color: var(--ink); }
+  .calibration li strong { color: var(--color-primary); }
+
+  footer.foot {
+    padding: 56px 0 72px;
+    border-top: 1px solid var(--rule-soft);
+    color: var(--ink-dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  footer.foot ul {
+    list-style: none; padding: 0; margin: 0 0 12px 0;
+    display: flex; gap: 22px; flex-wrap: wrap;
+  }
+  footer.foot a { color: var(--ink-muted); border-bottom-color: transparent; }
+  footer.foot a:hover { color: var(--ink); border-bottom-color: var(--ink-muted); }
+</style>
+</head>
+<body>
+
+<!-- ─── TOP NAV ───────────────────────────────────────────────── -->
+<nav class="topnav">
+  <div class="wrap">
+    <a class="brand" href="/">scry</a>
+    <div class="navlinks">
+      <a href="/similar-tools" aria-current="page">Similar Tools</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page">
+  <div class="narrow">
+    <h1>Similar Tools</h1>
+    <div class="abstract">
+      <p>Scry is most honestly understood in relation to the other approaches to the agent context problem &mdash; not as the only answer, but as one shape among several. This page is that comparison.</p>
+      <p>Eight categories below, each classified <strong>peer</strong>, <strong>adjacent</strong>, or <strong>subordinate</strong> against scry&rsquo;s marker contract, with named systems and the precise place each one is genuinely strong or genuinely limited. The classification key sits at the top; the calibration section at the bottom names where alternatives are strongest and where the marker contract has the clearest edge.</p>
+      <p>The page is rendered from <em>The Agent Context Landscape</em>, a research artifact the scryspec-worker track authored against scry&rsquo;s own marker corpus. Nothing is hidden &mdash; including scry&rsquo;s own tradeoffs.</p>
+    </div>
+  </div>
+</header>
+
+<section id="key">
+  <div class="narrow">
+    <h2>Classification key</h2>
+    <div class="key">
+      <ul>
+        <li><strong>Peer</strong> &mdash; solves the same problem (curated, durable, queryable knowledge of what already exists in the project) with a different primary mechanism. A reasonable buyer would compare it head-to-head with the marker contract.</li>
+        <li><strong>Adjacent</strong> &mdash; solves a related problem (raw retrieval, code navigation, larger context, ambient memory) that overlaps with agent context but is not the same thing. Often complementary.</li>
+        <li><strong>Subordinate</strong> &mdash; a technique the marker contract can use as an implementation detail rather than compete with. Calling it a competitor confuses categories.</li>
+      </ul>
+    </div>
+    <p style="margin-top: 18px; color: var(--ink-muted);">Scry&rsquo;s answer is a <strong>marker contract</strong>: every artifact carries an in-file YAML marker (id, summary, tags, applies, seeded questions) that an indexer pulls into a queryable cache. The agent queries the cache by structured fields, not by similarity. Authoring is deliberate; the marker is part of the file under version control. That answer is one shape. The shapes below are the others.</p>
+  </div>
+</section>
+
+<section id="rag">
+  <div class="narrow">
+    <h2><span class="num">01</span>RAG and vector databases</h2>
+    <p class="verdict"><span class="tag subordinate">Subordinate</span><span class="vlabel">Justification:</span>RAG returns nearest-neighbour chunks by embedding similarity; the marker contract can <em>use</em> embeddings as one ranking signal among structured fields. RAG-as-implementation is fine; RAG-as-substitute confuses retrieval with curation.</p>
+
+    <h3>What it is</h3>
+    <p>Retrieval-Augmented Generation: chunk the corpus, embed each chunk with a model (OpenAI <code>text-embedding-3</code>, Voyage, BGE, etc.), store vectors in an index, and at query time embed the query and return the nearest-neighbour chunks as additional context to the LLM.</p>
+
+    <h3>Named systems</h3>
+    <p>FAISS (Meta, library), pgvector (Postgres extension), Pinecone, Weaviate, Chroma, Qdrant, Milvus, LanceDB, ElasticSearch&rsquo;s <code>dense_vector</code>, OpenAI Assistants File Search, LlamaIndex and LangChain retriever abstractions sitting atop any of the above.</p>
+
+    <h3>How it approaches the problem</h3>
+    <p>Similarity in embedding space is treated as a proxy for relevance. The corpus is not curated; the index is the curator, by way of the embedding model&rsquo;s learned geometry.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>Similarity is not relevance.</strong> Two chunks that sound alike on the same topic may be the canonical design and a deprecated draft, or a spec and an angry comment about the spec. The similarity ranking does not know which is authoritative.</li>
+      <li><strong>The corpus has no spine.</strong> Nothing in the index represents &ldquo;this is the current truth on X.&rdquo; That assertion lives outside the system, in the authors&rsquo; heads, or not at all.</li>
+      <li><strong>Embedding-model coupling.</strong> Switch models, re-embed everything; embeddings from different models are not comparable. A marker cache is just text + SQLite.</li>
+      <li><strong>Top-k bias.</strong> Retrieval returns k chunks regardless of whether the right answer is the union of all of them or none of them. A marker query can return zero rows truthfully.</li>
+    </ul>
+
+    <h3>Why subordinate, not peer</h3>
+    <p>A marker contract can use embeddings as one ranking signal among the structured fields. Scry&rsquo;s own <code>scry__file_fts</code> is full-text; a future tier could embed marker summaries and add nearest-neighbour lookup. <em>Calibration: production RAG is more deterministic than reductive critiques imply &mdash; same query against a frozen index returns the same chunks. The honest weakness is opacity of the ranking and silent sensitivity to embedding-model upgrades, not raw determinism.</em></p>
+  </div>
+</section>
+
+<section id="code-intel">
+  <div class="narrow">
+    <h2><span class="num">02</span>Code intelligence</h2>
+    <p class="verdict"><span class="tag adjacent">Adjacent</span><span class="vlabel">Justification:</span>Code intel names what <em>exists</em> and <em>where</em>; the marker contract names what something <em>is</em> and <em>why</em>. Different layers. They compose.</p>
+
+    <h3>What it is</h3>
+    <p>Tooling that indexes a codebase by symbol &mdash; what functions exist, where they&rsquo;re defined, where they&rsquo;re called, what types they have &mdash; so an editor or search UI can jump to the right place.</p>
+
+    <h3>Named systems</h3>
+    <ul class="plain">
+      <li><strong>ctags / Universal Ctags.</strong> Text-file index of symbol &rarr; file:line. Decades old; still the floor.</li>
+      <li><strong>LSP &mdash; Language Server Protocol.</strong> Per-language servers (rust-analyzer, gopls, pyright, typescript-language-server) expose <code>workspaceSymbol</code>, <code>definition</code>, <code>references</code>, <code>hover</code>.</li>
+      <li><strong>Sourcegraph.</strong> Code search across many repos with structural queries, code navigation, and an LSIF/SCIP-based cross-repo index.</li>
+      <li><strong>Glean</strong> (Meta, open source). Schema-driven code knowledge base; used internally at Meta for cross-language code Q&amp;A.</li>
+      <li><strong>OpenGrok / Hound / livegrep.</strong> Repository-scale grep-with-an-index for fast text search.</li>
+      <li><strong>tree-sitter.</strong> Incremental parser producing concrete syntax trees; the substrate beneath much modern code-intel.</li>
+      <li><strong>Stack Graphs</strong> (GitHub). Scope-graph-based name resolution designed for cross-repo navigation.</li>
+    </ul>
+
+    <h3>How it approaches the problem</h3>
+    <p>&ldquo;What exists&rdquo; is answered at the level of program structure &mdash; symbols, definitions, types, references &mdash; not the level of intent, decision, or lesson.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>Code only.</strong> Designs, lessons, and decisions sit in markdown, YAML, JSONL, or someone&rsquo;s head. Code intel doesn&rsquo;t index them.</li>
+      <li><strong>Mechanical, not intentional.</strong> Code intel will happily index a deprecated function alongside the live one. There&rsquo;s no field that says &ldquo;this is the authoritative implementation of FR3.&rdquo;</li>
+      <li><strong>The &lsquo;why&rsquo; is invisible.</strong> Knowing a function exists and where it&rsquo;s called does not tell an agent why it exists, what tradeoff it embodies, or which lesson it implements.</li>
+    </ul>
+
+    <h3>Why adjacent, not peer</h3>
+    <p>An agent often needs both. A marker can bind to a symbol that LSP resolves, and code intel can be the substrate a marker-aware agent uses to follow <code>implements</code> edges into the implementation.</p>
+  </div>
+</section>
+
+<section id="knowledge-graphs">
+  <div class="narrow">
+    <h2><span class="num">03</span>Knowledge graphs</h2>
+    <p class="verdict"><span class="tag partial-peer">Partial Peer</span><span class="vlabel">Justification:</span>The closest <em>paradigm</em> match to scry. Scry is, viewed sideways, a knowledge graph whose nodes are in-file YAML markers and whose edges are <code>implements</code> / <code>depends_on</code> / <code>supersedes</code> references. The difference is location: scry&rsquo;s graph lives <em>in the source</em>, not in a sidecar store.</p>
+
+    <h3>What it is</h3>
+    <p>Represent the corpus as nodes (entities, files, concepts) and typed edges (depends-on, implements, supersedes) in a graph database; query with a graph language.</p>
+
+    <h3>Named systems</h3>
+    <ul class="plain">
+      <li><strong>Neo4j / TigerGraph / ArangoDB.</strong> General-purpose graph DBs.</li>
+      <li><strong>Microsoft GraphRAG.</strong> LLM-extracted entity-and-relationship graph layered atop RAG, with community-summarization for global queries; explicitly addresses the &ldquo;RAG cannot answer global questions&rdquo; failure mode.</li>
+      <li><strong>Cognee.</strong> Open-source memory engine that builds a knowledge graph and a vector index from ingested text.</li>
+      <li><strong>Code Property Graphs (CPG).</strong> From Yamaguchi et al. and productized as Joern / ShiftLeft; unify AST + CFG + DDG in one graph for code analysis.</li>
+      <li><strong>Semantic-web stack (RDF / SPARQL / OWL).</strong> The original knowledge-graph substrate. Heavyweight; rarely the right shape for an agent index but worth naming for completeness.</li>
+    </ul>
+
+    <h3>How it approaches the problem</h3>
+    <p>Curated or extracted typed relationships between things. Querying becomes graph traversal (&ldquo;which lessons are bound to specs that this PR&rsquo;s files implement?&rdquo;) rather than similarity.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>Authoring overhead.</strong> A separate graph store needs a separate authoring discipline. Markers live in the file they describe; graph nodes live in the database. Drift between source and graph is a constant maintenance tax.</li>
+      <li><strong>Extraction is lossy.</strong> Graphs built by LLM extraction (GraphRAG, Cognee) inherit the LLM&rsquo;s hallucination surface. Hand-authored edges (scry&rsquo;s <code>implements</code> / <code>depends_on</code>) are precise but expensive.</li>
+      <li><strong>No artifact-level mark.</strong> A node in Neo4j is not visible from the file. An agent reading the file does not know the node exists unless it queries.</li>
+    </ul>
+
+    <h3>Honest comparison point</h3>
+    <p>Joern&rsquo;s CPG and GraphRAG are genuinely doing similar work for different problems. <strong>GraphRAG is the most direct prior art</strong> for &ldquo;structured graph above raw retrieval, queryable by an agent.&rdquo; Scry&rsquo;s bet against it is the location bet &mdash; in-source vs sidecar &mdash; not a claim that structured curation is novel.</p>
+  </div>
+</section>
+
+<section id="agent-memory">
+  <div class="narrow">
+    <h2><span class="num">04</span>Agent-memory frameworks</h2>
+    <p class="verdict"><span class="tag peer">Closest Peers</span><span class="vlabel">Justification:</span>The projects most likely to be named in the same sentence as scry. The line worth drawing precisely: agent-memory frameworks are the right tool for <em>memory of interaction</em>; the marker contract is the right tool for <em>memory of artifact</em>.</p>
+
+    <h3>What it is</h3>
+    <p>Libraries and services that give an LLM agent durable, structured memory across sessions &mdash; facts, preferences, prior decisions &mdash; separate from the model&rsquo;s context window.</p>
+
+    <h3>Named systems</h3>
+    <ul class="plain">
+      <li><strong>MemGPT &rarr; Letta.</strong> Originally MemGPT (Berkeley, 2023); now Letta. Models a memory hierarchy (core / archival / recall) and exposes tools the agent calls to read and write each tier. &ldquo;Memory blocks&rdquo; are first-class typed objects; the agent edits its own block contents as it learns.</li>
+      <li><strong>mem0.</strong> Open-source memory layer. Extracts facts from conversation turns, classifies them, stores in a vector+graph hybrid, retrieves by relevance plus recency. Used by Cursor, Lindy, and others for cross-session user memory.</li>
+      <li><strong>Zep.</strong> Commercial agent memory service. Builds a temporal knowledge graph from conversation history; supports point-in-time queries (&ldquo;what did the user believe two weeks ago&rdquo;). Strong on user-fact memory for chat agents.</li>
+      <li><strong>LangGraph / LangChain memory.</strong> Framework-provided memory abstractions: <code>ConversationBufferMemory</code>, <code>ConversationSummaryMemory</code>, persisted via Redis / SQLite / Postgres. Lighter-weight than Letta; bring-your-own discipline.</li>
+      <li><strong>CrewAI / AutoGen memory.</strong> Multi-agent frameworks with per-agent and shared memory primitives; mostly thin wrappers around the above.</li>
+      <li><strong>Cognee (memory mode).</strong> Same project as the graph entry above; explicitly positioned as agent memory.</li>
+      <li><strong>OpenAI Assistants Memory and ChatGPT memory.</strong> Closed, managed; the consumer-grade reference point.</li>
+    </ul>
+
+    <h3>How they approach the problem</h3>
+    <p>Treat memory as the agent&rsquo;s self-managed substrate. The agent reads and writes via tools. Storage is typically a vector store, sometimes a graph, sometimes a JSON document the framework hands back on each turn.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>Memory is about the conversation, not the artifact.</strong> MemGPT, mem0, and Zep are at their best storing &ldquo;the user is on a Mac&rdquo; or &ldquo;we decided last week to use Postgres.&rdquo; They are not where you store &ldquo;this spec FR3 is implemented by this function.&rdquo; That binding lives in the codebase.</li>
+      <li><strong>Storage outside the source.</strong> A Zep graph or a Letta block is not in the repo. Cloning the project does not clone the memory. A new contributor reads the code without the memory; an agent on a fresh machine starts blind.</li>
+      <li><strong>LLM-mediated authoring.</strong> mem0 and Zep extract facts via an LLM and accept the noise floor that implies. The marker contract is human (or agent) authored deliberately and reviewed in PRs.</li>
+      <li><strong>Schema drift.</strong> Most agent-memory frameworks evolve schema as the product evolves. Scry markers are versioned with the spec and stable under the same git discipline as the source.</li>
+    </ul>
+
+    <h3>Where mem0 and scry overlap most directly</h3>
+    <p>Project-scoped fact recall. mem0&rsquo;s positioning increasingly extends past chat into &ldquo;memory for coding agents.&rdquo; That is the line scry sits on. The distinguishing question becomes: does the memory live in the source tree (scry), or in a sidecar service (mem0)? A mature agent could use both, for different things.</p>
+  </div>
+</section>
+
+<section id="long-context">
+  <div class="narrow">
+    <h2><span class="num">05</span>Long-context approaches</h2>
+    <p class="verdict"><span class="tag adjacent">Adjacent</span><span class="vlabel">Justification:</span>Long context is the substrate inside which retrieval and curation operate. Scry decides <em>what to include</em>; the context window decides <em>what fits</em>. They compose.</p>
+
+    <h3>What it is</h3>
+    <p>Skip retrieval; put everything in the prompt. Rely on model context windows large enough to hold the relevant slice of the codebase or document set.</p>
+
+    <h3>Named systems</h3>
+    <ul class="plain">
+      <li><strong>Gemini 1.5 / 2.0 / 2.5.</strong> 1M &ndash; 2M token windows; Google&rsquo;s long-context flagship.</li>
+      <li><strong>Claude 3.7 / 4 family.</strong> 200k standard, 1M tier on enterprise for Sonnet/Opus.</li>
+      <li><strong>GPT-4.1 / o1 / o3.</strong> 128k &ndash; 1M depending on tier.</li>
+      <li><strong>Architectural advances feeding this.</strong> FlashAttention, Ring Attention, sliding-window attention, attention sinks (StreamingLLM), state-space models (Mamba), grouped-query attention.</li>
+    </ul>
+
+    <h3>How it approaches the problem</h3>
+    <p>Curation is the model&rsquo;s job at inference time. Stuff the window; let attention sort it out.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>&ldquo;Lost in the Middle&rdquo;</strong> (Liu et al., 2023). Recall is uneven across long contexts; middle-of-window content is systematically underweighted. The effect is real and reproducible.</li>
+      <li><strong>Cost scales with tokens.</strong> A 1M-token call is cents-to-dollars per invocation. A scry query is microseconds and free.</li>
+      <li><strong>Latency.</strong> Long-context calls are slow even when affordable.</li>
+      <li><strong>It is not memory.</strong> Each call rebuilds context from scratch. Nothing learned in one call persists into the next.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="memory-files">
+  <div class="narrow">
+    <h2><span class="num">06</span>Hand-maintained memory files</h2>
+    <p class="verdict"><span class="tag partial-peer">Partial Peer</span><span class="vlabel">Justification:</span>The marker contract <em>is</em> this pattern pulled apart into one marker per artifact, with a schema. Many CLAUDE.md files are scry markers waiting to be extracted.</p>
+
+    <h3>What it is</h3>
+    <p>Markdown files at known paths that agents are instructed to read at session start. The simplest possible solution; massively deployed.</p>
+
+    <h3>Named systems</h3>
+    <ul class="plain">
+      <li><strong>CLAUDE.md</strong> (Anthropic Claude Code convention).</li>
+      <li><strong>AGENTS.md</strong> (emerging cross-tool convention; Cursor, Cline, others).</li>
+      <li><strong>.cursorrules / Cursor rules files.</strong></li>
+      <li><strong>Cline rules / .clinerules.</strong></li>
+      <li><strong>GitHub Copilot custom instructions.</strong></li>
+      <li><strong>Aider&rsquo;s <code>CONVENTIONS.md</code>.</strong></li>
+      <li>Any project&rsquo;s <strong>README, ARCHITECTURE.md, DESIGN.md</strong> read by the agent on demand.</li>
+    </ul>
+
+    <h3>How it approaches the problem</h3>
+    <p>Pre-load fixed context. Curation is manual; format is freeform prose. Newer conventions support selective imports and hierarchical loading &mdash; a real, if hand-curated, selection function.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>Doesn&rsquo;t scale past one file.</strong> Once the memory file grows past a few thousand tokens, agents stop reading it carefully &mdash; or they read it on every turn and burn context for nothing.</li>
+      <li><strong>No retrieval surface beyond imports.</strong> Selective imports help, but inside any included file there is no query &mdash; only &ldquo;the whole file or nothing.&rdquo;</li>
+      <li><strong>No graph.</strong> Cannot express &ldquo;this lesson supersedes that lesson&rdquo; except in prose, which the agent must re-parse each time.</li>
+      <li><strong>Encourages drift.</strong> The file is everywhere edited and nowhere reviewed against the code it claims to describe.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="grep">
+  <div class="narrow">
+    <h2><span class="num">07</span>Grep / ripgrep / full-text search</h2>
+    <p class="verdict"><span class="tag adjacent">Adjacent</span><span class="vlabel">Justification:</span>Grep is the universal floor; the marker contract is the curated ceiling. Scry&rsquo;s own <code>scry_grep</code> is body FTS underneath, with marker FTS above. They compose.</p>
+
+    <h3>What it is</h3>
+    <p>Search the source tree by literal or regex pattern. Fast; ubiquitous; the floor every agent already has.</p>
+
+    <h3>Named systems</h3>
+    <p>GNU grep, ripgrep (rg), ag (the silver searcher), ack, OpenGrok, livegrep, Sourcegraph&rsquo;s text search, SQLite FTS5, ElasticSearch BM25.</p>
+
+    <h3>How it approaches the problem</h3>
+    <p>No curation; the corpus <em>is</em> the index. Find by token, not by meaning.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>No ranking by authority.</strong> A grep for <code>auth</code> returns every file that contains the word, equally.</li>
+      <li><strong>No structured fields.</strong> Cannot ask &ldquo;designs with weight &ge; 0.7 in scope:auth.&rdquo;</li>
+      <li><strong>No relationships.</strong> Cannot follow <code>implements</code> from spec to code.</li>
+      <li><strong>Misses synonyms.</strong> A search for <code>JWT</code> will not find a doc that only says &ldquo;bearer token.&rdquo;</li>
+    </ul>
+  </div>
+</section>
+
+<section id="honourable-mentions">
+  <div class="narrow">
+    <h2><span class="num">08</span>Honourable mentions</h2>
+    <ul class="plain">
+      <li><strong>Notion / Confluence / Linear / Jira.</strong> External knowledge bases. Real, useful, and entirely outside the source tree. Same drift cost as KG sidecars.</li>
+      <li><strong>Codex / Greptile / Sweep / Cody.</strong> Coding agents with their own internal retrieval; closer to product than to category. They sit <em>above</em> this stack and could compose with scry.</li>
+      <li><strong>Embedchain / Haystack / DSPy retrievers.</strong> Framework-level RAG building blocks; subordinate to the RAG entry.</li>
+      <li><strong>Obsidian / Roam / Logseq.</strong> Human knowledge management with bidirectional links. The closest <em>human-side</em> analogue to the marker graph; not designed for agent consumption but worth naming for shape.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="calibration">
+  <div class="narrow">
+    <h2>Calibration</h2>
+    <div class="calibration">
+      <h3>Where the alternatives are genuinely strong</h3>
+      <ul>
+        <li><strong>Long context</strong> is the single biggest reason a marker contract <em>might not matter for some workloads</em>. If a project fits in 200k tokens and the relevant slice fits in 50k, the curation problem is small.</li>
+        <li><strong>Agent-memory frameworks</strong> (Letta, mem0, Zep) are doing excellent work on the <em>interaction-memory</em> problem and are legitimately winning that category. Their drift into artifact-memory is real and worth tracking.</li>
+        <li><strong>GraphRAG</strong> is the most serious prior art for structured curation above raw retrieval. Scry&rsquo;s bet against it is the location bet &mdash; in-source vs sidecar &mdash; not a claim that structured curation is novel.</li>
+        <li><strong>Production RAG</strong> is more deterministic than reductive critiques imply. The same query against a frozen index returns the same chunks; the honest weakness is opacity of the ranking, not raw determinism.</li>
+      </ul>
+      <h3>Where the marker contract has the clearest edge</h3>
+      <ul>
+        <li><strong>In-source authorship.</strong> No drift between code and metadata because they ship together.</li>
+        <li><strong>Per-artifact granularity.</strong> Not &ldquo;one memory file per repo&rdquo; and not &ldquo;one node per extracted entity&rdquo; &mdash; one marker per artifact, written by the artifact&rsquo;s author.</li>
+        <li><strong>Composability with the rest of the stack.</strong> Markers are not hostile to RAG, KG, LSP, or long context. They are the curation layer those mechanisms can operate against.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="scry-tradeoffs">
+  <div class="narrow">
+    <h2>Scry&rsquo;s own tradeoffs</h2>
+    <p>Stated honestly, because a comparison page that hides them would not be the page it claims to be:</p>
+    <ul class="plain">
+      <li><strong>Marker discipline is the cost.</strong> A file without a marker is invisible to the curated index; a marker whose fields no longer match the file&rsquo;s content silently degrades recall. Both failures are caught only by the agent that uses the system.</li>
+      <li><strong>Upfront authoring work.</strong> The marker contract trades authoring effort at write time for cheap, deterministic recall at read time. Worth it when the same knowledge is recalled across many sessions; not worth it for one-off or fast-changing state.</li>
+      <li><strong>Not a replacement for interaction memory.</strong> Scry does not store &ldquo;what the user said last week.&rdquo; That category belongs to Letta, mem0, Zep. A mature agent uses both.</li>
+      <li><strong>SQL is scry&rsquo;s answer, not the spec&rsquo;s mandate.</strong> A different implementation could index the same marker corpus into embeddings and serve recall by similarity; RAG, in that sense, is a possible implementation of the marker contract rather than a peer alternative to it.</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <ul>
+      <li><a href="/">scry &mdash; home</a></li>
+      <li><a href="https://github.com/prmichaelsen/scry">GitHub: scry</a></li>
+      <li><a href="https://github.com/prmichaelsen/scry-spec">GitHub: scry-spec</a></li>
+      <li><a href="mailto:inbox@theterminal.chat">Contact</a></li>
+    </ul>
+    <p style="margin: 8px 0 0 0;">scry is developed and operated by reflection.</p>
+  </div>
+</footer>
+
+</body>
+</html>

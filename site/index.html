@@ -272,6 +272,54 @@
     margin: 18px 0;
   }
 
+  /* Top nav — minimal, always inline, no hamburger */
+  nav.topnav {
+    border-bottom: 1px solid var(--rule-soft);
+    background: var(--bg);
+  }
+  nav.topnav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    gap: 16px;
+  }
+  nav.topnav .brand {
+    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    color: var(--color-primary);
+    border-bottom: 0;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+  }
+  nav.topnav .brand:hover { color: var(--color-accent); }
+  nav.topnav .navlinks {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 3vw, 28px);
+  }
+  nav.topnav .navlinks a {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+    font-size: clamp(12px, 1.5vw, 14px);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    border-bottom: 0;
+    white-space: nowrap;
+  }
+  nav.topnav .navlinks a:hover,
+  nav.topnav .navlinks a[aria-current="page"] {
+    color: var(--color-primary);
+  }
+  @media (max-width: 480px) {
+    nav.topnav .wrap { padding-top: 14px; padding-bottom: 14px; }
+    nav.topnav .navlinks { gap: 14px; }
+  }
+
+  header.hero { padding-top: 96px; }
+  @media (max-width: 720px) { header.hero { padding-top: 64px; } }
+
   footer.foot {
     padding: 56px 0 72px;
     border-top: 1px solid var(--rule-soft);
@@ -407,6 +455,16 @@
 </style>
 </head>
 <body>
+
+<!-- ─── TOP NAV ───────────────────────────────────────────────── -->
+<nav class="topnav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-current="page">scry</a>
+    <div class="navlinks">
+      <a href="/similar-tools">Similar Tools</a>
+    </div>
+  </div>
+</nav>
 
 <!-- ─── HERO ──────────────────────────────────────────────────── -->
 <header class="hero">
