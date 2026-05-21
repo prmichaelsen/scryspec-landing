@@ -280,41 +280,39 @@
   nav.topnav .wrap {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding-top: 18px;
     padding-bottom: 18px;
     gap: 16px;
   }
-  nav.topnav .brand {
-    font-family: ui-serif, "Iowan Old Style", Georgia, serif;
-    font-size: clamp(18px, 2.2vw, 22px);
-    color: var(--color-primary);
-    border-bottom: 0;
-    letter-spacing: -0.01em;
-    font-weight: 500;
-  }
-  nav.topnav .brand:hover { color: var(--color-accent); }
   nav.topnav .navlinks {
     display: flex;
-    align-items: center;
-    gap: clamp(14px, 3vw, 28px);
+    align-items: baseline;
+    gap: clamp(10px, 1.6vw, 14px);
   }
   nav.topnav .navlinks a {
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
-    font-size: clamp(12px, 1.5vw, 14px);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: clamp(13px, 1.6vw, 15px);
+    letter-spacing: 0.06em;
     color: var(--ink-muted);
-    border-bottom: 0;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
     white-space: nowrap;
+    font-weight: 500;
   }
-  nav.topnav .navlinks a:hover,
+  nav.topnav .navlinks a:hover { color: var(--color-primary); }
   nav.topnav .navlinks a[aria-current="page"] {
-    color: var(--color-primary);
+    border-bottom-color: var(--ink-muted);
+  }
+  nav.topnav .navlinks .navsep {
+    color: var(--ink-dim);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(13px, 1.6vw, 15px);
+    user-select: none;
   }
   @media (max-width: 480px) {
     nav.topnav .wrap { padding-top: 14px; padding-bottom: 14px; }
-    nav.topnav .navlinks { gap: 14px; }
+    nav.topnav .navlinks { gap: 8px; }
   }
 
   header.hero { padding-top: 96px; }
@@ -459,8 +457,9 @@
 <!-- ─── TOP NAV ───────────────────────────────────────────────── -->
 <nav class="topnav">
   <div class="wrap">
-    <a class="brand" href="/" aria-current="page">scry</a>
     <div class="navlinks">
+      <a href="/" aria-current="page">SCRY</a>
+      <span class="navsep" aria-hidden="true">|</span>
       <a href="/similar-tools">Similar Tools</a>
     </div>
   </div>
