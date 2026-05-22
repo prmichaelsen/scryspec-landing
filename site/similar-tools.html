@@ -565,6 +565,8 @@
 
     <h3>Why adjacent, not peer</h3>
     <p>The honest read is that beads and scry are complementary tools that share an audience. A mature coding-agent setup could plausibly run both: beads as the work queue, scry as the artifact index. The categories overlap in marketing copy and diverge in mechanics.</p>
+
+    <p>One convergence worth noting: beads and scry independently arrived at the same answer for stable identity under concurrent multi-agent writes. Beads mints hash-based task IDs (<code>bd-a3f8</code>); scry mints collision-checked hash-suffixed marker IDs (<code>design.auth-flow~abcd1234</code>) via <code>scry_mint</code>. Two tools built independently in the agent-tooling space, converging on the same ID design — observation, not endorsement, but it is a signal the shape of the problem rewards the shape of the answer.</p>
   </div>
 </section>
 
