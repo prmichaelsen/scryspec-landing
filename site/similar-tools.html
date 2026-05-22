@@ -537,9 +537,38 @@
   </div>
 </section>
 
+<section id="task-graphs">
+  <div class="narrow">
+    <h2><span class="num">08</span>Task graphs for coding agents</h2>
+    <div class="verdict">
+      <span class="tag adjacent">Adjacent</span>
+      <p class="justification"><span class="vlabel">Justification:</span>Same audience (long-horizon coding agents), same marketing language (&ldquo;persistent, structured memory for coding agents&rdquo;) &mdash; different layer. A task graph tracks <em>what needs doing</em>; the marker contract indexes <em>what already exists</em>. They compose; they do not substitute.</p>
+    </div>
+
+    <h3>What it is</h3>
+    <p>A dependency-aware issue tracker built for AI agents rather than humans. Tasks are nodes in a graph with typed edges (<code>blocks</code>, <code>relates_to</code>, <code>duplicates</code>, <code>supersedes</code>); ready-task detection falls out of the graph. Storage is a versioned SQL database so multiple agents on multiple branches can write concurrently without merge collisions.</p>
+
+    <h3>Named systems</h3>
+    <p><a href="https://github.com/gastownhall/beads" target="_blank" rel="noopener">Beads</a> (<code>bd</code>). Dolt-backed (the version-controlled SQL database) in embedded or server mode; hash-based task IDs (<code>bd-a3f8.1.1</code>) sidestep the merge-collision problem that hits sequential IDs in multi-writer workflows. Targets Claude Code, Copilot CLI, Factory.ai and similar agents.</p>
+
+    <h3>How it approaches the problem</h3>
+    <p>Treat agent context as the set of pending tasks and their dependencies. The agent queries the graph for the next ready task, marks progress, threads messages against tasks, and lets closed tasks compact away as &ldquo;memory decay.&rdquo; State the agent maintains <em>about its own work</em> is durable and queryable across sessions.</p>
+
+    <h3>Limitations relative to the marker contract</h3>
+    <ul class="plain">
+      <li><strong>Different object.</strong> Beads tracks <em>tasks</em>; scry indexes <em>artifacts</em>. A beads node is &ldquo;add JWT auth, blocked on user-model refactor.&rdquo; A scry node is &ldquo;the JWT-auth design doc, summary X, tags Y, implemented by file Z.&rdquo; Neither answers the other&rsquo;s question.</li>
+      <li><strong>Sidecar storage.</strong> Tasks live in <code>.beads/embeddeddolt/</code> (or an external Dolt server), not in the source files. Cloning the project clones the directory; understanding why the code looks the way it does still requires the artifact layer.</li>
+      <li><strong>No artifact-level mark.</strong> A file does not know it is referenced by a beads task. Discovery is via the task index, not the source.</li>
+    </ul>
+
+    <h3>Why adjacent, not peer</h3>
+    <p>The honest read is that beads and scry are complementary tools that share an audience. A mature coding-agent setup could plausibly run both: beads as the work queue, scry as the artifact index. The categories overlap in marketing copy and diverge in mechanics.</p>
+  </div>
+</section>
+
 <section id="honourable-mentions">
   <div class="narrow">
-    <h2><span class="num">08</span>Honourable mentions</h2>
+    <h2><span class="num">09</span>Honourable mentions</h2>
     <ul class="plain">
       <li><strong><a href="https://www.notion.so" target="_blank" rel="noopener">Notion</a> / <a href="https://www.atlassian.com/software/confluence" target="_blank" rel="noopener">Confluence</a> / <a href="https://linear.app" target="_blank" rel="noopener">Linear</a> / <a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener">Jira</a>.</strong> External knowledge bases. Real, useful, and entirely outside the source tree. Same drift cost as KG sidecars.</li>
       <li><strong><a href="https://openai.com/index/openai-codex/" target="_blank" rel="noopener">Codex</a> / <a href="https://www.greptile.com" target="_blank" rel="noopener">Greptile</a> / <a href="https://sweep.dev" target="_blank" rel="noopener">Sweep</a> / <a href="https://sourcegraph.com/cody" target="_blank" rel="noopener">Cody</a>.</strong> Coding agents with their own internal retrieval; closer to product than to category. They sit <em>above</em> this stack and could compose with scry.</li>
