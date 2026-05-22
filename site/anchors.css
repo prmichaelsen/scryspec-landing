@@ -1,0 +1,34 @@
+/* scryspec.com — header deep-link anchors */
+.h-anchor {
+  display: inline-block;
+  margin-left: 0.35em;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--ink-dim, #6b6b6b);
+  text-decoration: none;
+  font-size: 0.55em;
+  vertical-align: middle;
+  letter-spacing: 0;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: color 0.15s ease;
+}
+.h-anchor:hover,
+.h-anchor:focus {
+  color: var(--ink-muted, #aaaaaa);
+  outline: none;
+}
+.h-anchor.copied {
+  color: #7ab87a;
+}
+.h-anchor.copied::after {
+  content: " copied";
+  margin-left: 0.3em;
+  font-size: 0.9em;
+  letter-spacing: 0.02em;
+}
+h2 > .h-anchor,
+h3 > .h-anchor {
+  white-space: nowrap;
+}
